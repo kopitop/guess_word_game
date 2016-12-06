@@ -4,13 +4,16 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <div class="panel panel-default">
+            <div class="panel panel-default room-list">
                 <h3>ROOM LIST</h3>
-                <ul class="well">
-                    <li><a href="#">ROOM 1</a><span class="pull-right">Full</span></li>
-                    <li><a href="#">ROOM 1</a><span class="pull-right">Full</span></li>
-                    <li><a href="#">ROOM 1</a><span class="pull-right">Full</span></li>
-                </ul>
+                <div class="well">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item">ROOM 1<span class="pull-right">Full</span></a>
+                        <a href="#" class="list-group-item">ROOM 2<span class="pull-right">Full</span></a>
+                        <a href="#" class="list-group-item">ROOM 3<span class="pull-right">Full</span></a>
+                    </div>
+                </div>
+                
                 <nav aria-label="Page navigation">
                   <ul class="pagination">
                     <li>
@@ -30,13 +33,16 @@
                     </li>
                   </ul>
                 </nav>
-                <a class="btn btn-primary">Create Room</a>
-                <a class="btn btn-default">Join Room</a>
+                <div class="action-room">
+                    <a class="btn btn-primary">Create Room</a>
+                    <a class="btn btn-default">Join Room</a>
+                </div>
             </div>
         </div>
         <div class="col-md-8">
             <div class="panel panel-default">
                 <h3>LEADERBOARD</h3>
+                <canvas id="myChart" width="400" height="400"></canvas>
             </div>
         </div>
     </div>

@@ -1,0 +1,17 @@
+{
+  "name": "gwg.app",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Nguyen Minh Hiep <hiep24892@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/kopitop/guess_word_game",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

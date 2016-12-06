@@ -19,6 +19,9 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 
-Auth::routes();
-
-Route::get('/home', 'HomeController@index');
+//User features
+Route::group(['namespace' => 'Web', 'middleware' => 'auth'], function () {
+    Route::resource('rooms', 'RoomsController', ['only' => [
+        'index', 'store', 'update',
+    ]]);
+});

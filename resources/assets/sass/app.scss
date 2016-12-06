@@ -7,3 +7,13 @@
 
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+// Home
+.panel-default {
+	padding: 15px;
+}
+.room-list .well {
+	height: 300px;
+	overflow-y: scroll;
+	padding: 15px;
+}
