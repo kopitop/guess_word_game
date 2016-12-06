@@ -40,4 +40,12 @@ class Room extends Model
     {
         return $this->hasMany(Result::class);
     }
+
+    /**
+     * Determine if the room can be joined.
+     */
+    public function canBeJoined()
+    {
+        return $this->status == config('room.status.empty') || $this->status == config('room.status.one');
+    }
 }

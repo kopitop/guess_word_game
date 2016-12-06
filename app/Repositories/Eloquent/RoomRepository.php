@@ -16,4 +16,23 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
     {
         return 'App\Models\Room';
     }
+
+    /**
+     * Join to a room
+     *
+     * @param array $id
+     *
+     * @return mixed
+     */
+    public function showRoom($id)
+    {   
+        $room = $this->model->findOrFail($id);
+
+        if ($room->status == 0 || $room->status == 1) {
+        	
+        }
+
+        return $room;
+
+    }
 }

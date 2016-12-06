@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Web;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Contracts\RoomRepositoryInterface as RoomRepository;
+use App\Http\Requests\RoomSubject;
+use Exception;
+use Log;
 
 class RoomsController extends BaseController
 {
@@ -49,7 +52,17 @@ class RoomsController extends BaseController
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $input =  $request->only('description');
+            $room = $this->roomRepository->create($input);
+        } catch (Exception $e) {
+            Log::debug($e);
+
+            return redirect()->action('Web\RoomsController@show', ['id' => $room->id])
+                ->with('status', trans('front-end/room.create.success'));
+        }
+
+        return back()->withErrors(trans('front-end/room.create.failed'));
     }
 
     /**
@@ -60,7 +73,15 @@ class RoomsController extends BaseController
      */
     public function show($id)
     {
-        //
+        $room = $this->roomRepository->find($id);
+        if ($room->canBeJoin()) {
+            $this->viewData['room'] = $this->roomRepository->showRoom($id);
+
+            return view('front-end.room.detail', $this->viewData)
+                ->with('status', trans('front-end/room.join.success'));
+        }
+
+        return back()->withErrors(trans('front-end/room.join.failed'));
     }
 
     /**
