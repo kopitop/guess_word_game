@@ -16,7 +16,12 @@ require('laravel-elixir-vue-2');
 elixir(mix => {
     mix.scripts([
     		'chart.js/dist/Chart.js',
+    		'wPaint/src/wPaint.js',
     	], 'public/js/vendor.js', 'node_modules')
+	   .styles([
+	   		'wPaint/src/wPaint.css'
+	   	], 'public/css/vendor.css', 'node_modules')
+	   .copy('node_modules/bootstrap-sass/assets/fonts', 'public/fonts')
 	   .sass('app.scss')
        .webpack('app.js');
 });

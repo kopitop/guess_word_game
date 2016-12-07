@@ -11,7 +11,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="/css/app.css" rel="stylesheet">
+    {!! Html::style(elixir('css/vendor.css')) !!}
+    {!! Html::style(elixir('css/app.css')) !!}
 
     <!-- Scripts -->
     <script>
@@ -82,7 +83,7 @@
     </div>
 
     <!-- Scripts -->
-    {!! Html::script(elixir('js/vendor.js')); !!}
-    {!! Html::script(elixir('js/app.js')); !!}
+    {!! Html::script(elixir('js/vendor.js')) !!}
+    {!! Html::script(elixir('js/app.js')) !!}
 </body>
 </html>

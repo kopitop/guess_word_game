@@ -24,7 +24,7 @@ class StoreRoom extends FormRequest
     public function rules()
     {
         return [
-            'description' => 'required|max:255',
+            'description' => 'required|min:10|max:255',
         ];
     }
 }

@@ -21,7 +21,8 @@ Route::get('/home', 'HomeController@index');
 
 //User features
 Route::group(['namespace' => 'Web', 'middleware' => 'auth'], function () {
+	Route::post('rooms/quit', 'RoomsController@quit');
     Route::resource('rooms', 'RoomsController', ['only' => [
-        'index', 'store', 'update',
+        'index', 'store', 'update', 'show'
     ]]);
 });
