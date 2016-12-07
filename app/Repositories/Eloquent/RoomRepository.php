@@ -72,4 +72,22 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
 
         return $data;
     }
+
+    /**
+     * Show a room
+     *
+     * @param array $id
+     *
+     * @return mixed
+     */
+    public function getPlayers($id)
+    {   
+        $result = $this->model->findOrFail($id)
+            ->results()->first();
+
+        $data['drawer'] = $result->drawer;
+        $data['guesser'] = $result->guesser;
+
+        return $data;
+    }
 }

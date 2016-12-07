@@ -7,7 +7,7 @@
                 <div class="list-group">
                     @if (count($rooms))
                     @foreach ($rooms as $room)
-                        <a href="#" class="list-group-item">{{ $room->description }}<span class="pull-right">{{ $room->status }}</span></a>
+                        <a href="javascript:;" data-room-id="{{ $room->id }}" class="room-item list-group-item">{{ $room->description }}<span class="pull-right">{{ $room->status }}</span></a>
                     @endforeach
                     @else
                         <div class="alert alert-warning" role="alert">
@@ -33,7 +33,7 @@
                         {!! Form::submit(trans('front-end/room.buttons.create'), [
                             'class' => 'btn btn-primary',
                         ]) !!}
-                        <a class="btn btn-default">{{ trans('front-end/room.buttons.join') }}</a>
+                        <a id="join-button" class="btn btn-default">{{ trans('front-end/room.buttons.join') }}</a>
                     </div>
                 {!! Form::close() !!}
 

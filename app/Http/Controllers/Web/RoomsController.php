@@ -78,11 +78,10 @@ class RoomsController extends BaseController
     {
         DB::beginTransaction();
         try{
-            $this->viewData['room'] = $this->roomRepository->showRoom($id);
+            $this->viewData['data'] = $this->roomRepository->showRoom($id);
             DB::commit();
 
-            return view('front-end.room.detail', $this->viewData)
-                ->with('status', trans('front-end/room.join.success'));
+            return view('front-end.room.detail', $this->viewData);
         } catch (RoomException $e) {
             Log::debug($e);
             DB::rollback();
@@ -135,5 +134,18 @@ class RoomsController extends BaseController
     public function quit(Request $request)
     {
         //
+    }
+
+    /**
+     * Refresh the specified room.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function refresh(Request $request)
+    {
+        $players = $this->roomRepository->getPlayers($request->input('id'));
+
+        return response()->json($players);
     }
 }

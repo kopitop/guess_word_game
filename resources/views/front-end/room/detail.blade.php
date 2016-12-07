@@ -5,9 +5,9 @@
             <h3><strong>{{ $title }}: </strong>{{ trans('front-end/room.info') }}</h3>
             <div class="well">
                 <div class="list-group">
-                    <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.description') }}: </strong>{{ $room['room']->description }}</a>
-                    <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.player') }}: {{ $room['result']->drawer_id  ? $room['result']->drawer->name : '' }}</strong></a>
-                    <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.player') }}: {{ $room['result']->guesser_id  ? $room['result']->guesser->name : '' }}</strong></a>
+                    <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.description') }}: </strong>{{ $data['room']->description }}</a>
+                    <a href="#" class="list-group-item drawer"><strong>{{ trans('front-end/room.player') }}: <span class="player-name"></span></strong></a>
+                    <a href="#" class="list-group-item guesser"><strong>{{ trans('front-end/room.player') }}: <span class="player-name"></span></strong></a>
                 </div>
                 <div class="list-group">
                     <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.history') }}</a>
@@ -27,7 +27,6 @@
                         ]) !!}
                     </div>
                 {!! Form::close() !!}
-
             </div>
         </div>
     </div>
@@ -37,4 +36,51 @@
             @include('layouts.chatbox')
         </div>
     </div>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script>
+        (function() {
+            //Checkif jQuery has been initialized
+            var runMyCode = function($) {
+                //Init a socket
+                var socket = io('http://localhost:3000');
+
+                //Joined a room
+                var room = "room-" + "{{ $data['room']->id }}";
+                socket.on('connect', function (data) {
+                    socket.emit('joined', room);
+                });
+
+                //Get new players data when someone joining the room
+                socket.on('new-player-connected', function () {
+                    var url = '/rooms/refresh';
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        method: 'POST', 
+                        url: url,
+                        data: {id: "{{ $data['room']->id }}"},
+                        dataType: 'JSON',
+                        success: function (data, textStatus, jqXHR) {
+                            $('.drawer .player-name').html(data.drawer.name);
+                            $('.guesser .player-name').html(data.guesser.name);
+                            console.log(data);
+                        }
+                    });
+                })
+            };
+
+            var timer = function() {
+                if (window.jQuery && window.jQuery.ui) {
+                    runMyCode(window.jQuery);
+                } else {
+                    window.setTimeout(timer, 100);
+                }
+            };
+            timer();
+        })();
+        
+    </script>
 @endsection
