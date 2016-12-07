@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Web;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Contracts\RoomRepositoryInterface as RoomRepository;
-use App\Http\Requests\RoomSubject;
+use App\Http\Requests\StoreRoom;
 use Exception;
+use App\Exceptions\RoomException;
 use Log;
+use DB;
 
 class RoomsController extends BaseController
 {
@@ -50,19 +52,20 @@ class RoomsController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRoom $request)
     {
         try {
             $input =  $request->only('description');
+            $input['status'] = config('room.status.empty');
             $room = $this->roomRepository->create($input);
         } catch (Exception $e) {
             Log::debug($e);
-
-            return redirect()->action('Web\RoomsController@show', ['id' => $room->id])
-                ->with('status', trans('front-end/room.create.success'));
+            
+            return back()->withErrors(trans('front-end/room.create.failed'));
         }
 
-        return back()->withErrors(trans('front-end/room.create.failed'));
+        return redirect()->action('Web\RoomsController@show', ['id' => $room->id])
+            ->with('status', trans('front-end/room.create.success'));
     }
 
     /**
@@ -73,15 +76,20 @@ class RoomsController extends BaseController
      */
     public function show($id)
     {
-        $room = $this->roomRepository->find($id);
-        if ($room->canBeJoin()) {
+        DB::beginTransaction();
+        try{
             $this->viewData['room'] = $this->roomRepository->showRoom($id);
+            DB::commit();
 
             return view('front-end.room.detail', $this->viewData)
                 ->with('status', trans('front-end/room.join.success'));
-        }
+        } catch (RoomException $e) {
+            Log::debug($e);
+            DB::rollback();
 
-        return back()->withErrors(trans('front-end/room.join.failed'));
+            return redirect()->action('Web\RoomsController@index')
+                ->withErrors($e->getMessage());
+        }
     }
 
     /**
@@ -114,6 +122,17 @@ class RoomsController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
+    {
+        //
+    }
+
+    /**
+     * Quit the specified room.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function quit(Request $request)
     {
         //
     }
