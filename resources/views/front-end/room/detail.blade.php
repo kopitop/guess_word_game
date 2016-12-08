@@ -18,15 +18,9 @@
             </div>
 
             <div class="action-room">
-                {!! Form::open([
-                    'action' => ['Web\RoomsController@quit'],
-                ]) !!}
-                    <div class="form-group clearfix">
-                        {!! Form::submit(trans('front-end/room.buttons.quit'), [
-                            'class' => 'btn btn-danger',
-                        ]) !!}
-                    </div>
-                {!! Form::close() !!}
+                <div class="form-group clearfix">
+                    <a id="quit-button" class="btn btn-danger" href="javascript:;">{{ trans('front-end/room.buttons.quit') }}</a>
+                </div>
             </div>
         </div>
     </div>
@@ -42,7 +36,9 @@
             //Checkif jQuery has been initialized
             var runMyCode = function($) {
                 //Init a socket
-                var socket = io('http://localhost:3000');
+                var socket = io('http://localhost:3000', {
+                    'reconnectionAttempts': 3,
+                });
 
                 //Joined a room
                 var room = "room-" + "{{ $data['room']->id }}";
@@ -50,9 +46,10 @@
                     socket.emit('joined', room);
                 });
 
-                //Get new players data when someone joining the room
-                socket.on('new-player-connected', function () {
+                //Refresh room function
+                function refresh() {
                     var url = '/rooms/refresh';
+                    //Inject csrf-token to ajax request
                     $.ajaxSetup({
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -64,12 +61,40 @@
                         data: {id: "{{ $data['room']->id }}"},
                         dataType: 'JSON',
                         success: function (data, textStatus, jqXHR) {
-                            $('.drawer .player-name').html(data.drawer.name);
+                            if (data.drawer !== null) {
+                                $('.drawer .player-name').html(data.drawer.name);
+                            } else {
+                                $('.drawer .player-name').html('');
+                            }
+                            if (data.guesser !== null) {
                             $('.guesser .player-name').html(data.guesser.name);
-                            console.log(data);
+                            } else {
+                                $('.guesser .player-name').html('');
+                            }
                         }
                     });
-                })
+                }
+
+                //Get new players data when someone joining the room
+                socket.on('new-player-connected', refresh)
+
+                //Get new players data when a player quiting the room
+                socket.on('a-player-quit', refresh)
+
+                //Quit button
+                $('#quit-button').on('click', function () {
+                    var url = '/rooms/quit'
+                    $.ajax({
+                        method: 'POST',
+                        url: url,
+                        data: {id: "{{ $data['room']->id }}"},
+                        dataType: 'json',
+                        success: function (data, textStatus, jqXHR) {
+                            socket.emit('quit', room);
+                            window.location.replace("/rooms");
+                        }
+                    });
+                });
             };
 
             var timer = function() {
@@ -81,6 +106,5 @@
             };
             timer();
         })();
-        
     </script>
 @endsection

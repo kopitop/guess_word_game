@@ -22,4 +22,7 @@ io.sockets.on('connection', function(socket) {
         socket.join(room);
         io.sockets.to(room).emit('new-player-connected');
     })
+    socket.on('quit', function (room) {
+      io.sockets.to(room).emit('a-player-quit');
+    })
 });

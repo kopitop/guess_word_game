@@ -46,7 +46,7 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
             return $data;
         }
 
-        //If the room can not be joined
+        //If the room can not be joined (full or finished)
         if (!$data['room']->canBeJoined()) {
             throw new RoomException(trans('front-end/room.exception.unavailable'), config('room.exception.unvailable'));
         }
@@ -78,7 +78,7 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
      *
      * @param array $id
      *
-     * @return mixed
+     * @return array
      */
     public function getPlayers($id)
     {   
@@ -89,5 +89,51 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         $data['guesser'] = $result->guesser;
 
         return $data;
+    }
+
+    /**
+     * Quit a room
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function quitRoom($id)
+    {   
+        $data['room'] = $this->model->findOrFail($id);
+        $data['result'] = $data['room']->results()->first();
+
+        //If there is not any result, throw exception
+        if (!$data['result']) {
+            throw new RoomException(trans('front-end/room.exception.failed'));
+        }
+
+        //If user is not in the room 
+        if (!$data['result']->isJoined()) {
+            throw new RoomException(trans('front-end/room.exception.permission'));
+        }
+
+        //Update player slots
+        if ($data['result']->isDrawer()) {
+            $data['result']->fill([
+                    'drawer_id' => null,
+                ]);
+        } else {
+            $data['result']->fill([
+                    'guesser_id' => null,
+                ]);
+        }
+
+        //Update room status
+        $data['room']->fill([
+                'status' => --$data['room']->status
+            ]);
+
+        //If can not update, throw a exception
+        if (!$data['result']->save() || !$data['room']->save()) {
+            throw new RoomException(trans('front-end/room.exception.quit'));
+        }
+
+        return true;
     }
 }

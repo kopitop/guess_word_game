@@ -20,6 +20,13 @@ const app = new Vue({
 });
 
 $(document).ready(function () {
+    //Inject csrf-token to ajax request
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     //User Chart
     if($('#myChart').length > 0) {
         var ctx = $("#myChart");

@@ -133,7 +133,21 @@ class RoomsController extends BaseController
      */
     public function quit(Request $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $input = $request->only('id');
+            $this->roomRepository->quitRoom($input['id']);
+            DB::commit();
+
+            return response()->json(trans('front-end/room.quit.success'));
+        } catch (RoomException $e) {
+            Log::debug($e);
+            DB::rollback();
+
+            return redirect()->action('Web\RoomsController@index')
+                ->withErrors($e->getMessage());
+        }
+        
     }
 
     /**
