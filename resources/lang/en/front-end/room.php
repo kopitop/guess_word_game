@@ -11,6 +11,7 @@ return [
         'join' => 'Join Room',
         'quit' => 'Quit',
         'send' => 'Send',
+        'ready' => 'Ready',
     ],
     'description' => 'Description',
     'player' => 'Player',

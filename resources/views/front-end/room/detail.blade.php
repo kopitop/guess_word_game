@@ -6,8 +6,8 @@
             <div class="well">
                 <div class="list-group">
                     <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.description') }}: </strong>{{ $data['room']->description }}</a>
-                    <a href="#" class="list-group-item drawer"><strong>{{ trans('front-end/room.player') }}: <span class="player-name"></span></strong></a>
-                    <a href="#" class="list-group-item guesser"><strong>{{ trans('front-end/room.player') }}: <span class="player-name"></span></strong></a>
+                    <a href="#" class="list-group-item drawer"><strong>{{ trans('front-end/room.player') }}: <span class="player-name"></span><span class="is-ready"></span></strong></a>
+                    <a href="#" class="list-group-item guesser"><strong>{{ trans('front-end/room.player') }}: <span class="player-name"></span><span class="is-ready"></span></strong></a>
                 </div>
                 <div class="list-group">
                     <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.history') }}</a>
@@ -20,6 +20,8 @@
             <div class="action-room">
                 <div class="form-group clearfix">
                     <a id="quit-button" class="btn btn-danger" href="javascript:;">{{ trans('front-end/room.buttons.quit') }}</a>
+                    <a id="ready-button" class="btn btn-success" href="javascript:;">{{ trans('front-end/room.buttons.ready') }}</a>
+                    <input type="hidden" name="ready" id="ready-status" value="-1">
                 </div>
             </div>
         </div>
@@ -63,11 +65,13 @@
                         success: function (data, textStatus, jqXHR) {
                             if (data.drawer !== null) {
                                 $('.drawer .player-name').html(data.drawer.name);
+                                $('.drawer').data('userid', data.drawer.id);
                             } else {
                                 $('.drawer .player-name').html('');
                             }
                             if (data.guesser !== null) {
-                            $('.guesser .player-name').html(data.guesser.name);
+                                $('.guesser .player-name').html(data.guesser.name).data('userid', data.guesser.id);
+                                $('.guesser').data('userid', data.guesser.id);
                             } else {
                                 $('.guesser .player-name').html('');
                             }
@@ -95,6 +99,31 @@
                         }
                     });
                 });
+
+                //Ready button
+                $('#ready-button').on('click', function () {
+                    $('#ready-status').val(($('#ready-status').val() == 1) ? -1 : 1);
+                    var ready_status = 
+                    socket.emit('ready', parseInt($('#ready-status').val()), room, "{{ Auth::user()->id }}");
+                });
+
+                //Updating status of player
+                var number_of_ready_people = 0;
+                socket.on('a-player-click-ready', function (ready, userid) {
+                    number_of_ready_people += ready;
+                    if ($('.drawer').data('userid') == userid && ready == 1) {
+                        $('.drawer .is-ready').append('<button class="btn btn-info btn-sm pull-right">Ready</button>');
+                    } else if ($('.drawer').data('userid') == userid && ready != 1) {
+                        $('.drawer .is-ready').text('');
+                    }
+
+                    if ($('.guesser').data('userid') == userid && ready == 1) {
+                        $('.guesser .is-ready').append('<button class="btn btn-info btn-sm pull-right">Ready</button>');
+                    } else if ($('.guesser').data('userid') == userid && ready != 1) {
+                        $('.guesser .is-ready').text('');
+                    }
+                    console.log(number_of_ready_people);
+                })
             };
 
             var timer = function() {
