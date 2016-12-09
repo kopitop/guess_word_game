@@ -6,8 +6,8 @@
             <div class="well">
                 <div class="list-group">
                     <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.description') }}: </strong>{{ $data['room']->description }}</a>
-                    <a href="#" class="list-group-item drawer"><strong>{{ trans('front-end/room.player') }}: <span class="player-name"></span></strong></a>
-                    <a href="#" class="list-group-item guesser"><strong>{{ trans('front-end/room.player') }}: <span class="player-name"></span></strong></a>
+                    <a href="#" class="list-group-item drawer"><strong>{{ trans('front-end/room.player') }}: <span class="player-name"></span><span class="is-ready"></span></strong></a>
+                    <a href="#" class="list-group-item guesser"><strong>{{ trans('front-end/room.player') }}: <span class="player-name"></span><span class="is-ready"></span></strong></a>
                 </div>
                 <div class="list-group">
                     <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.history') }}</a>
@@ -20,6 +20,8 @@
             <div class="action-room">
                 <div class="form-group clearfix">
                     <a id="quit-button" class="btn btn-danger" href="javascript:;">{{ trans('front-end/room.buttons.quit') }}</a>
+                    <a id="ready-button" class="btn btn-success" href="javascript:;">{{ trans('front-end/room.buttons.ready') }}</a>
+                    <input type="hidden" name="ready" id="ready-status" value="0">
                 </div>
             </div>
         </div>
@@ -61,8 +63,20 @@
                         data: {id: "{{ $data['room']->id }}"},
                         dataType: 'JSON',
                         success: function (data, textStatus, jqXHR) {
-                            $('.drawer .player-name').html((data.drawer !== null) ? data.drawer.name : '');
-                            $('.guesser .player-name').html((data.guesser !== null) ? data.guesser.name : '');
+                            if (data.drawer !== null) {
+                                $('.drawer .player-name').html(data.drawer.name);
+                                $('.drawer').data('userid', data.drawer.id);
+                            } else {
+                                $('.drawer .player-name').html(data.drawer.name);
+                            }
+
+                            if (data.guesser !== null) {
+                                $('.guesser .player-name').html(data.guesser.name);
+                                $('.guesser').data('userid', data.guesser.id);
+                            } else {
+                                $('.guesser .player-name').html(data.guesser.name);
+                            }
+
                         }
                     });
                 }
@@ -87,6 +101,54 @@
                         }
                     });
                 });
+
+
+                //Ready button
+                $('#ready-button').on('click', function () {
+                    $('#ready-status').val(($('#ready-status').val() == 1) ? 0 : 1);
+                    socket.emit('ready', parseInt($('#ready-status').val()), room, "{{ Auth::user()->id }}");
+                    var url = '/rooms/ready'
+                    $.ajax({
+                        method: 'POST',
+                        url: url,
+                        data: {id: "{{ $data['room']->id }}", ready: parseInt($('#ready-status').val())},
+                        dataType: 'json',
+                        success: function (data, textStatus, jqXHR) {
+                            if (data == 15) {
+                                socket.emit('all-ready', room);
+                            }
+                        }
+                    });
+                });
+
+                //Updating status of player
+                socket.on('a-player-click-ready', function (ready, userid) {
+                    if ($('.drawer').data('userid') == userid && ready == 1) {
+                        $('.drawer .is-ready').append('<button class="btn btn-info btn-sm pull-right">Ready</button>');
+                    } else if ($('.drawer').data('userid') == userid && ready == 0) {
+                        $('.drawer .is-ready').text('');
+                    }
+
+                    if ($('.guesser').data('userid') == userid && ready == 1) {
+                        $('.guesser .is-ready').append('<button class="btn btn-info btn-sm pull-right">Ready</button>');
+                    } else if ($('.guesser').data('userid') == userid && ready == 0) {
+                        $('.guesser .is-ready').text('');
+                    }
+                })
+
+                //Initialize first round
+                socket.on('start-to-play', function (ready, userid) {
+                    var url = '/rooms/start-to-play'
+                    $.ajax({
+                        method: 'POST',
+                        url: url,
+                        data: {id: "{{ $data['room']->id }}"},
+                        dataType: 'json',
+                        success: function (data, textStatus, jqXHR) {
+                            console.log(data);
+                        }
+                    });
+                })
             };
 
             var timer = function() {

@@ -147,7 +147,6 @@ class RoomsController extends BaseController
         return response()->json($data);
     }
 
-
     /**
      * Quit the specified room.
      *
@@ -169,6 +168,54 @@ class RoomsController extends BaseController
 
             return redirect()->action('Web\RoomsController@index')
                 ->withErrors($e->getMessage());
+        }
+        
+    }
+
+    /**
+     * Update ready status of players in the specified room.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateReadyState(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $input = $request->only('id', 'ready');
+            $state = $this->repository->updateReadyState($input['id'], $input['ready']);
+            DB::commit();
+
+            return response()->json($state);
+        } catch (RoomException $e) {
+            Log::debug($e);
+            DB::rollback();
+
+            return response()->json(trans('front-end/room.update-state.failed'));
+        }
+        
+    }
+
+    /**
+     * Begin to play in the specified room.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function beginPlay(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $input = $request->only('id');
+            $state = $this->repository->updateReadyState($input['id']);
+            DB::commit();
+
+            return response()->json($state);
+        } catch (RoomException $e) {
+            Log::debug($e);
+            DB::rollback();
+
+            return response()->json(trans('front-end/room.update-state.failed'));
         }
         
     }

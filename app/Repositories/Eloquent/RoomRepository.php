@@ -158,4 +158,45 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
 
         return true;
     }
+
+    /**
+     * Update state of a room
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function updateReadyState($id, $ready)
+    {   
+        $data['room'] = $this->model->findOrFail($id);
+
+        //Update state of the room
+
+        if ($ready) {
+            //Add a ready player
+            $room['state'] = 
+                $data['room']->state & config('room.state.player-1-ready') ?
+                $data['room']->state | config('room.state.player-2-ready') :
+                $data['room']->state | config('room.state.player-1-ready')
+            ;
+        } else {
+            //Remove unready player
+            $room['state'] = 
+                ($data['room']->state & config('room.state.player-1-ready')
+                &&
+                $data['room']->state & config('room.state.player-2-ready'))
+                ? 
+                $data['room']->state ^ config('room.state.player-2-ready') :
+                $data['room']->state ^ config('room.state.player-1-ready')
+            ;
+        }
+
+        $data['room']->forceFill($room);
+
+        if (!$data['room']->save()) {
+            throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
+        }
+
+        return $data['room']->state;
+    }
 }

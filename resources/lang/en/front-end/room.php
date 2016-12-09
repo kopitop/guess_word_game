@@ -9,6 +9,8 @@ return [
         'create' => 'Create Room',
         'join' => 'Join Room',
         'quit' => 'Quit',
+        'send' => 'Send',
+        'ready' => 'Ready',
     ],
     'description' => 'Description',
     'status' => [

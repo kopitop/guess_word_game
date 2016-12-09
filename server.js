@@ -25,4 +25,10 @@ io.sockets.on('connection', function(socket) {
     socket.on('quit', function (room) {
       io.sockets.to(room).emit('a-player-quit');
     });
+    socket.on('ready', function (ready, room, userid) {
+      io.sockets.to(room).emit('a-player-click-ready',ready ,userid);
+    });
+    socket.on('all-ready', function (room) {
+      io.sockets.to(room).emit('start-to-play');
+    });
 });
