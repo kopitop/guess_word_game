@@ -8,10 +8,9 @@
             <div class="list-group">
                 @if (count($rooms))
                 @foreach ($rooms as $room)
-                    <a href="#" class="list-group-item">{{ trans('front-end/room.title') . ': ' . $room->id }}
-                        <span class="pull-right">
-                            {{ $room->status }}
-                        </span>
+                    <a href="javascript:;" data-room-id="{{ $room->id }}" class="room-item list-group-item">
+                        {{ $room->description }}
+                        <span class="pull-right">{{ trans('front-end/room.status.' . $room->status) }}</span>
                     </a>
                 @endforeach
                 @else

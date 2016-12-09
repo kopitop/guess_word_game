@@ -16,4 +16,20 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
     {
         return 'App\Models\Room';
     }
+
+    /**
+     * Create a room
+     *
+     * @param array $input
+     *
+     * @return mixed
+     */
+    public function createRoom($input)
+    {   
+        $data['description'] = $input['description'];
+        $data['status'] = config('room.status.empty');
+
+        return $this->model->create($data)
+        	->results()->create([]);
+    }
 }

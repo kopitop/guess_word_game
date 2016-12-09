@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Web;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Contracts\RoomRepositoryInterface as RoomRepository;
+use App\Http\Requests\StoreRoom;
+use Exception;
+use Log;
 
 class RoomsController extends BaseController
 {
@@ -42,9 +45,19 @@ class RoomsController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRoom $request)
     {
-        //
+        try {
+            $input =  $request->only('description');
+            $this->repository->createRoom($input);
+        } catch (Exception $e) {
+            Log::debug($e);
+            
+            return back()->withErrors(trans('front-end/room.create.failed'));
+        }
+
+        return redirect()->action('Web\RoomsController@index')
+            ->with('status', trans('front-end/room.create.success'));
     }
 
     /**
