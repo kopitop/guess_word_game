@@ -6,6 +6,7 @@ use App\Repositories\Eloquent\BaseRepository;
 use App\Repositories\Contracts\RoomRepositoryInterface;
 use App\Exceptions\RoomException;
 use Auth;
+use App\Models\Result;
 
 class RoomRepository extends BaseRepository implements RoomRepositoryInterface
 {
@@ -170,8 +171,12 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
     {   
         $data['room'] = $this->model->findOrFail($id);
 
-        //Update state of the room
+        //Can not update state when the room is playing
+        if ($data['room']->status == config('room.status.playing')) {
+            throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
+        }
 
+        //Update state of the room
         if ($ready) {
             //Add a ready player
             $room['state'] = 
@@ -198,5 +203,39 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         }
 
         return $data['room']->state;
+    }
+
+
+    /**
+     * Begin to play in a room
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function beginPlay($id)
+    {   
+        $data['room'] = $this->model->findOrFail($id);
+        $data['result'] = $data['room']->results()->first();
+
+        //Update status of the room
+        $room['status'] = config('room.status.playing');
+        $data['room']->forceFill($room);
+
+        if (!$data['room']->save()) {
+            throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
+        }
+
+        //Update word for first round
+        $result['word_id'] = Result::inRandomOrder()->first()->id;
+        $data['result']->forceFill($result);
+
+        if (!$data['result']->save()) {
+            throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
+        }
+
+        $data['word'] = $data['result']->word;
+
+        return $data;
     }
 }

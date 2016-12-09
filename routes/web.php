@@ -29,6 +29,7 @@ Route::group(['namespace' => 'Web', 'middleware' => 'auth'], function () {
     Route::post('rooms/quit', 'RoomsController@quit');
 	Route::post('rooms/refresh', 'RoomsController@refresh');
 	Route::post('rooms/ready', 'RoomsController@updateReadyState');
+	Route::post('rooms/start-to-play', 'RoomsController@beginPlay');
     Route::resource('rooms', 'RoomsController', ['only' => [
 	    'index', 'store', 'update', 'show'
     ]]);

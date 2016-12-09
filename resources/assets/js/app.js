@@ -49,4 +49,9 @@ $(document).ready(function() {
     $('.room-item').on('click', function () {
         $('#join-button').attr('href', 'rooms/join/' + $(this).data('room-id'));
     });
+
+    //Init wPaint
+    if($('#wPaint').length > 0) {
+        $('#wPaint').wPaint();
+    }
 })

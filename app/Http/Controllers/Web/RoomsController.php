@@ -26,7 +26,7 @@ class RoomsController extends BaseController
      */
     public function index()
     {
-        $this->viewData['rooms'] = $this->repository->paginate(config('room.list-limit'));
+        $this->viewData['rooms'] = $this->repository->orderBy('id', 'desc')->paginate(config('room.list-limit'));
 
         return view('front-end.room.index', $this->viewData);
     }
@@ -207,15 +207,15 @@ class RoomsController extends BaseController
         DB::beginTransaction();
         try {
             $input = $request->only('id');
-            $state = $this->repository->updateReadyState($input['id']);
+            $data = $this->repository->beginPlay($input['id']);
             DB::commit();
 
-            return response()->json($state);
+            return response()->json($data);
         } catch (RoomException $e) {
             Log::debug($e);
             DB::rollback();
 
-            return response()->json(trans('front-end/room.update-state.failed'));
+            return response()->json(trans('front-end/room.init-play.failed'));
         }
         
     }

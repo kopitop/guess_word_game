@@ -67,14 +67,14 @@
                                 $('.drawer .player-name').html(data.drawer.name);
                                 $('.drawer').data('userid', data.drawer.id);
                             } else {
-                                $('.drawer .player-name').html(data.drawer.name);
+                                $('.drawer .player-name').html('');
                             }
 
                             if (data.guesser !== null) {
                                 $('.guesser .player-name').html(data.guesser.name);
                                 $('.guesser').data('userid', data.guesser.id);
                             } else {
-                                $('.guesser .player-name').html(data.guesser.name);
+                                $('.guesser .player-name').html('');
                             }
 
                         }
@@ -145,7 +145,12 @@
                         data: {id: "{{ $data['room']->id }}"},
                         dataType: 'json',
                         success: function (data, textStatus, jqXHR) {
-                            console.log(data);
+                            if ("{{ Auth::user()->id }}" == $('.drawer').data('userid')) {
+                                $('#word').html(data.word.content);
+                            } else {
+                                $('#wPaint').hide();
+                                $('#word').html('Please waiting...');
+                            }
                         }
                     });
                 })

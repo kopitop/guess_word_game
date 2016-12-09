@@ -1,4 +1,5 @@
 <div class="chat_area">
+	<h2 id="word"></h2>
     <ul class="list-unstyled">
         <li class="left clearfix">
             <div id="wPaint" style="position:relative; width:500px; height:200px; background-color:#7a7a7a; margin:20px auto;"></div>
