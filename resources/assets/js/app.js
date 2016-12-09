@@ -42,4 +42,9 @@ $(document).ready(function() {
             }
         }
     });
+
+    //Join button
+    $('.room-item').on('click', function () {
+        $('#join-button').attr('href', 'rooms/join/' + $(this).data('room-id'));
+    });
 })

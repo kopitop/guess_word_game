@@ -21,10 +21,12 @@ Route::get('/home', 'HomeController@index');
 Route::group(['namespace' => 'Web', 'middleware' => 'auth'], function () {
     Route::get('users/change-password', 'UsersController@editPassword');
     Route::put('users/change-password', 'UsersController@updatePassword');
-    Route::resource('rooms', 'RoomsController', ['only' => [
-        'index', 'store', 'update',
-    ]]);
     Route::resource('users', 'UsersController', ['only'=> [
         'show', 'update', 'edit',
+    ]]);
+
+    Route::get('rooms/join/{id}', 'RoomsController@join');
+    Route::resource('rooms', 'RoomsController', ['only' => [
+	    'index', 'store', 'update',
     ]]);
 });

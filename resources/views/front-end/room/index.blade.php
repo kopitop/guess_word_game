@@ -37,7 +37,7 @@
                     {!! Form::submit(trans('front-end/room.buttons.create'), [
                         'class' => 'btn btn-primary',
                     ]) !!}
-                    <a class="btn btn-default">{{ trans('front-end/room.buttons.join') }}</a>
+                    <a id="join-button" class="btn btn-default">{{ trans('front-end/room.buttons.join') }}</a>
                 </div>
             {!! Form::close() !!}
 

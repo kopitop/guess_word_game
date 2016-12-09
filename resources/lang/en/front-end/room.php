@@ -13,8 +13,9 @@ return [
     'status' => [
     	0 =>  'Empty',
     	1 =>  'Waiting',
-    	2 =>  'Playing',
-    	3 =>  'Closed',
+        2 =>  'Full',
+    	3 =>  'Playing',
+    	4 =>  'Closed',
     ],
     'player' => 'Player',
     'history' => 'History',

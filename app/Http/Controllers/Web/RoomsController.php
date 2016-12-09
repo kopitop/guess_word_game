@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Contracts\RoomRepositoryInterface as RoomRepository;
 use App\Http\Requests\StoreRoom;
 use Exception;
+use App\Exceptions\RoomException;
 use Log;
+use DB;
 
 class RoomsController extends BaseController
 {
@@ -103,5 +105,30 @@ class RoomsController extends BaseController
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Join a room
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function join($id)
+    {
+        DB::beginTransaction();
+        try{
+            $data = $this->repository->joinRoom($id);
+            DB::commit();
+
+            return redirect()->action('Web\RoomsController@show', ['id' => $id])
+                ->with('status', trans('front-end/room.join.success'));
+
+        } catch (RoomException $e) {
+            Log::debug($e);
+            DB::rollback();
+
+            return redirect()->action('Web\RoomsController@index')
+                ->withErrors($e->getMessage());
+        }
     }
 }

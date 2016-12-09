@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Auth;
 
 class Result extends Model
 {
@@ -61,5 +62,21 @@ class Result extends Model
     public function word()
     {
         return $this->belongsTo(Word::class);
+    }
+
+    /**
+     * Diffirentiating current user is either drawer or guesser each turn
+     */
+    public function isDrawer()
+    {
+        return $this->drawer_id == Auth::user()->id;
+    }
+
+    /**
+     * Check if current user is joined
+     */
+    public function isJoining()
+    {
+        return Auth::user()->id == $this->drawer_id || Auth::user()->id == $this->guesser_id;
     }
 }
