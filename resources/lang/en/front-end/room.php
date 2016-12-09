@@ -8,6 +8,7 @@ return [
     'buttons' =>  [
         'create' => 'Create Room',
         'join' => 'Join Room',
+        'quit' => 'Quit',
     ],
     'description' => 'Description',
     'status' => [
@@ -28,6 +29,10 @@ return [
     'create' => [
         'success' => 'You have created the room successfully',
         'failed' => 'Can not create new room, please try again',
+    ],
+    'join' => [
+        'success' => 'Click ready button when you are ready to play',
+        'failed' => 'There is something wrong, you can not join this room',
     ],
     'panel' => 'Panel'
 ];

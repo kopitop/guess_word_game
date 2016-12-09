@@ -26,7 +26,9 @@ Route::group(['namespace' => 'Web', 'middleware' => 'auth'], function () {
     ]]);
 
     Route::get('rooms/join/{id}', 'RoomsController@join');
+    Route::post('rooms/quit', 'RoomsController@quit');
+	Route::post('rooms/refresh', 'RoomsController@refresh');
     Route::resource('rooms', 'RoomsController', ['only' => [
-	    'index', 'store', 'update',
+	    'index', 'store', 'update', 'show'
     ]]);
 });

@@ -87,4 +87,75 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         return $data;
     }
 
+    /**
+     * Show a room
+     *
+     * @param array $input
+     *
+     * @return mixed
+     */
+    public function showRoom($id)
+    {   
+        $data['room'] = $this->model->findOrFail($id);
+        $data['result'] = $data['room']->results()->first();
+        $data['drawer'] = $data['result']->drawer;
+        $data['guesser'] = $data['result']->guesser;
+
+        return $data;
+    }
+
+    /**
+     * Quit a room
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function quitRoom($id)
+    {   
+        $data['room'] = $this->model->findOrFail($id);
+        $data['result'] = $data['room']->results()->first();
+
+        //If there is not any result, throw exception
+        if (!$data['result']) {
+            throw new RoomException(trans('front-end/room.exception.failed'));
+        }
+
+        //If user is not in the room 
+        if (!$data['result']->isJoining()) {
+            throw new RoomException(trans('front-end/room.exception.permission'));
+        }
+
+        //Update player slots
+        if ($data['result']->isDrawer()) {
+            $data['result']->fill([
+                    'drawer_id' => null,
+                ]);
+        } else {
+            $data['result']->fill([
+                    'guesser_id' => null,
+                ]);
+        }
+
+        if (!$data['result']->save()) {
+            throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
+        }
+
+        //Update state of the room
+        $room['state'] = 
+            $data['room']->state == (config('room.state.player-1-joined') & config('room.state.player-2-joined'))? 
+            $data['room']->state ^ config('room.state.player-2-joined') :
+            $data['room']->state ^ config('room.state.player-1-joined')
+        ;
+
+        //Update status of the room
+        $room['status'] = --$data['room']->status;
+        $data['room']->forceFill($room);
+
+        if (!$data['room']->save()) {
+            throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
+        }
+
+        return true;
+    }
 }

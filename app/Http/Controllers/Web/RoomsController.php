@@ -70,7 +70,9 @@ class RoomsController extends BaseController
      */
     public function show($id)
     {
-        //
+        $this->viewData['data'] = $this->repository->showRoom($id);
+
+        return view('front-end.room.detail', $this->viewData);
     }
 
     /**
@@ -116,7 +118,7 @@ class RoomsController extends BaseController
     public function join($id)
     {
         DB::beginTransaction();
-        try{
+        try {
             $data = $this->repository->joinRoom($id);
             DB::commit();
 
@@ -130,5 +132,44 @@ class RoomsController extends BaseController
             return redirect()->action('Web\RoomsController@index')
                 ->withErrors($e->getMessage());
         }
+    }
+
+    /**
+     * Refresh the specified room.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function refresh(Request $request)
+    {
+        $data = $this->repository->showRoom($request->only('id')['id']);
+
+        return response()->json($data);
+    }
+
+
+    /**
+     * Quit the specified room.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function quit(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $input = $request->only('id');
+            $this->repository->quitRoom($input['id']);
+            DB::commit();
+
+            return response()->json(trans('front-end/room.quit.success'));
+        } catch (RoomException $e) {
+            Log::debug($e);
+            DB::rollback();
+
+            return redirect()->action('Web\RoomsController@index')
+                ->withErrors($e->getMessage());
+        }
+        
     }
 }
