@@ -220,6 +220,10 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         $data['room'] = $this->model->findOrFail($id);
         $data['result'] = $data['room']->results()->first();
 
+        if (!$data['room']->states & config('room.state.player-2-ready')) {
+            throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
+        }
+
         //Update status of the room
         $room['status'] = config('room.status.playing');
         $data['room']->forceFill($room);
@@ -251,6 +255,10 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
     public function postImage($id, $image)
     {   
         $data['room'] = $this->model->findOrFail($id);
+        if ($data['room']->status != config('room.status.playing')) {
+            throw new RoomException(trans('front-end/room.exception.failed'));
+        }
+        
         $data['current_round'] = $data['room']->results()->orderBy('id', 'desc')->first();
 
         //Update image
@@ -275,6 +283,10 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
     public function postAnswer($id, $answer)
     {   
         $data['room'] = $this->model->findOrFail($id);
+        if ($data['room']->status != config('room.status.playing')) {
+            throw new RoomException(trans('front-end/room.exception.failed'));
+        }
+
         $data['current_round'] = $data['room']->results()->orderBy('id', 'desc')->first();
 
         //Update image
@@ -300,6 +312,11 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
     public function createNewRound($id)
     {   
         $data['room'] = $this->model->findOrFail($id);
+
+        if ($data['room']->status != config('room.status.playing')) {
+            throw new RoomException(trans('front-end/room.exception.failed'));
+        }
+
         $data['last_round'] = $data['room']->results()->orderBy('id', 'desc')->first();
 
         if (is_null($data['last_round']->is_correct)) {
@@ -312,6 +329,30 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
                 'guesser_id' => $data['last_round']->drawer_id,
                 'word_id' => Word::inRandomOrder()->first()->id,
             ]);
+
+        return $data;
+    }
+
+    /**
+     * Begin to play in a room
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function finishRoom($id)
+    {   
+        $data['room'] = $this->model->findOrFail($id);
+
+        if ($data['room']->status != config('room.status.playing')) {
+            throw new RoomException(trans('front-end/room.exception.failed'));
+        }
+
+        $room['status'] = config('room.status.closed');
+        $data['room']->fill($room);
+        if (!$data['room']->save()) {
+            throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
+        }
 
         return $data;
     }

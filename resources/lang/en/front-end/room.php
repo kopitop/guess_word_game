@@ -13,6 +13,7 @@ return [
         'ready' => 'Ready',
         'submit' => 'Submit',
         'new-round' => 'New Round',
+        'finish' => 'Finish',
     ],
     'description' => 'Description',
     'status' => [

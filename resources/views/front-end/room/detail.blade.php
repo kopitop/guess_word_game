@@ -10,18 +10,68 @@
                     <a href="#" class="list-group-item guesser"><strong>{{ trans('front-end/room.player') }}: <span class="player-name"></span><span class="is-ready"></span></strong></a>
                 </div>
                 <div class="list-group">
-                    <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.history') }}</a>
-                    <a href="#" class="list-group-item"><i>{{ trans('front-end/room.word') }} 1</i><span class="pull-right glyphicon glyphicon-ok"></span></a>
-                    <a href="#" class="list-group-item"><i>{{ trans('front-end/room.word') }} 2</i><span class="pull-right glyphicon glyphicon-remove"></span></a>
-                    <a href="#" class="list-group-item"><i>{{ trans('front-end/room.word') }} 3</i><span class="pull-right glyphicon glyphicon-remove"></span></a>
+                    <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.history') }}
+                        <span class="pull-right">
+                            {!! $data['results']->filter(function ($value, $key) {
+                                return $value->is_correct;
+                            })->count();
+                            !!}
+                            /
+                            {!! count($data['results']) - 1 !!}
+                        </span>
+                    </a>
+
+                    @foreach ($data['results'] as $key => $result)
+                        @if ($key < count($data['results']) - 1)
+                        <a href="#" class="list-group-item"><i>{{ $result->word->content }}</i>
+                            {!! $result->is_correct ?
+                                '<span class="pull-right glyphicon glyphicon-ok"></span>' :
+                                '<span class="pull-right glyphicon glyphicon-remove"></span>'
+                            !!}
+                        </a>
+                        @elseif (
+                            $data['current_round']->isDrawer()  &&
+                            (
+                                $data['room']->status == config('room.status.playing') ||
+                                $data['room']->status == config('room.status.closed')
+                            )
+                        )
+                            <a href="#" class="list-group-item"><i>{{ $result->word->content }}</i>
+                                <div class="windows8 pull-right">
+                                    <div class="wBall" id="wBall_1">
+                                        <div class="wInnerBall"></div>
+                                    </div>
+                                    <div class="wBall" id="wBall_2">
+                                        <div class="wInnerBall"></div>
+                                    </div>
+                                    <div class="wBall" id="wBall_3">
+                                        <div class="wInnerBall"></div>
+                                    </div>
+                                    <div class="wBall" id="wBall_4">
+                                        <div class="wInnerBall"></div>
+                                    </div>
+                                    <div class="wBall" id="wBall_5">
+                                        <div class="wInnerBall"></div>
+                                    </div>
+                                </div>
+                            </a>
+                        @endif
+                    @endforeach
                 </div>
             </div>
 
             <div class="action-room">
                 <div class="form-group clearfix">
+                    @if (
+                        ($data['room']->status == config('room.status.waiting')) || 
+                        ($data['room']->status == config('room.status.full'))
+                    )
                     <a id="quit-button" class="btn btn-danger" href="javascript:;">{{ trans('front-end/room.buttons.quit') }}</a>
                     <a id="ready-button" class="btn btn-success" href="javascript:;">{{ trans('front-end/room.buttons.ready') }}</a>
                     <input type="hidden" name="ready" id="ready-status" value="0">
+                    @elseif ($data['room']->status == config('room.status.playing'))
+                    <a id="finish-button" class="btn btn-warning" href="javascript:;">{{ trans('front-end/room.buttons.finish') }}</a> 
+                    @endif
                 </div>
             </div>
         </div>
@@ -203,7 +253,7 @@
                     $('#image').remove();
                     $('#send-image').remove();
                     $('#submit-answer').remove();
-                    $('#result').html('Answer of guesser is ' + data.current_round.answer + ' ,and the true answer is' + " {{ $data['current_round']->word->content }}");
+                    $('#result').html('Answer of guesser is ' + data.current_round.answer + ' ,and the true answer is' + " {{ $data['current_round']->word ? $data['current_round']->word->content : '' }}");
                     if ("{{ $data['current_round']->isDrawer() }}") {
                         $('#result').append('<a href="javascript:;" id="new-round" class="btn btn-primary">{{ trans('front-end/room.buttons.new-round') }}</a>');
                     }
@@ -225,6 +275,25 @@
 
                 //Get new round
                 socket.on('get-new-round', function () {
+                    location.reload();
+                });
+
+                //Finish
+                $(document).on('click', '#finish-button', function () {
+                    var url = '/rooms/finish';
+                    $.ajax({
+                        method: 'POST',
+                        url: url,
+                        data: {id: "{{ $data['room']->id }}"},
+                        dataType: 'json',
+                        success: function (data, textStatus, jqXHR) {
+                            socket.emit('finish', room);
+                        }
+                    });
+                });
+
+                //Close room
+                socket.on('close-room', function () {
                     location.reload();
                 });
             };

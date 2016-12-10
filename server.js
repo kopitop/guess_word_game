@@ -38,7 +38,9 @@ io.sockets.on('connection', function(socket) {
       io.sockets.to(room).emit('render-result', data);
     });
     socket.on('new-round', function (room) {
-      console.log('new-round has been created');
       io.sockets.to(room).emit('get-new-round');
+    });
+    socket.on('finish', function (room) {
+      io.sockets.to(room).emit('close-room');
     });
 });

@@ -288,4 +288,27 @@ class RoomsController extends BaseController
             return response()->json(trans('front-end/room.init-play.failed'));
         }
     }
+
+    /**
+     * Begin to play in the specified room.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function postFinish(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $input = $request->only('id');
+            $data = $this->repository->finishRoom($input['id']);
+            DB::commit();
+
+            return response()->json($data);
+        } catch (RoomException $e) {
+            Log::debug($e);
+            DB::rollback();
+
+            return response()->json(trans('front-end/room.init-play.failed'));
+        }
+    }
 }

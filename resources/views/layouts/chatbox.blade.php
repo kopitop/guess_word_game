@@ -1,5 +1,5 @@
 <div class="chat_area">
-	<h2 id="word">{{ $data['current_round']->isDrawer() ? $data['current_round']->word->content : 'Please waiting...' }}</h2>
+	<h2 id="word">{{ $data['current_round']->isDrawer() && $data['current_round']->word ? $data['current_round']->word->content : 'Please waiting...' }}</h2>
     <ul class="list-unstyled">
         <li class="left clearfix">
             @if ($data['current_round']->isDrawer())
