@@ -11,6 +11,8 @@ return [
         'quit' => 'Quit',
         'send' => 'Send',
         'ready' => 'Ready',
+        'submit' => 'Submit',
+        'new-round' => 'New Round',
     ],
     'description' => 'Description',
     'status' => [

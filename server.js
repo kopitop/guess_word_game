@@ -29,7 +29,16 @@ io.sockets.on('connection', function(socket) {
       io.sockets.to(room).emit('a-player-click-ready',ready ,userid);
     });
     socket.on('all-ready', function (room) {
-      console.log('ready to play');
       io.sockets.to(room).emit('start-to-play');
+    });
+    socket.on('post-image', function (data, room) {
+      io.sockets.to(room).emit('render-image', data);
+    });
+    socket.on('post-answer', function (data, room) {
+      io.sockets.to(room).emit('render-result', data);
+    });
+    socket.on('new-round', function (room) {
+      console.log('new-round has been created');
+      io.sockets.to(room).emit('get-new-round');
     });
 });

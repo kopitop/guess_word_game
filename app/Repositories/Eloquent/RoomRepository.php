@@ -7,6 +7,7 @@ use App\Repositories\Contracts\RoomRepositoryInterface;
 use App\Exceptions\RoomException;
 use Auth;
 use App\Models\Result;
+use App\Models\Word;
 
 class RoomRepository extends BaseRepository implements RoomRepositoryInterface
 {
@@ -228,7 +229,7 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         }
 
         //Update word for first round
-        $result['word_id'] = Result::inRandomOrder()->first()->id;
+        $result['word_id'] = Word::inRandomOrder()->first()->id;
         $data['result']->forceFill($result);
 
         if (!$data['result']->save()) {
@@ -260,6 +261,57 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         if (!$data['current_round']->save()) {
             throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
         }
+
+        return $data;
+    }
+
+    /**
+     * Begin to play in a room
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function postAnswer($id, $answer)
+    {   
+        $data['room'] = $this->model->findOrFail($id);
+        $data['current_round'] = $data['room']->results()->orderBy('id', 'desc')->first();
+
+        //Update image
+        $data['current_round']->fill([
+            'answer' => $answer,
+            'is_correct' => $data['current_round']->word->content == $answer
+            ]);
+
+        if (!$data['current_round']->save()) {
+            throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
+        }
+
+        return $data;
+    }
+
+    /**
+     * Begin to play in a room
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function createNewRound($id)
+    {   
+        $data['room'] = $this->model->findOrFail($id);
+        $data['last_round'] = $data['room']->results()->orderBy('id', 'desc')->first();
+
+        if (is_null($data['last_round']->is_correct)) {
+            throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
+        }
+
+        //Create a new round
+        $data['room']->results()->create([
+                'drawer_id' => $data['last_round']->guesser_id,
+                'guesser_id' => $data['last_round']->drawer_id,
+                'word_id' => Word::inRandomOrder()->first()->id,
+            ]);
 
         return $data;
     }

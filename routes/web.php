@@ -30,7 +30,9 @@ Route::group(['namespace' => 'Web', 'middleware' => 'auth'], function () {
 	Route::post('rooms/refresh', 'RoomsController@refresh');
 	Route::post('rooms/ready', 'RoomsController@updateReadyState');
     Route::post('rooms/start-to-play', 'RoomsController@beginPlay');
-	Route::post('rooms/send-image', 'RoomsController@postImage');
+    Route::post('rooms/send-image', 'RoomsController@postImage');
+    Route::post('rooms/submit-answer', 'RoomsController@postAnswer');
+	Route::post('rooms/new-round', 'RoomsController@postNewRound');
     Route::resource('rooms', 'RoomsController', ['only' => [
 	    'index', 'store', 'update', 'show'
     ]]);

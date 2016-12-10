@@ -166,10 +166,67 @@
                         data: {id: "{{ $data['room']->id }}", image:$('#wPaint').wPaint('image')},
                         dataType: 'json',
                         success: function (data, textStatus, jqXHR) {
-                            console.log(data);
+                            socket.emit('post-image', data, room);
                         }
-                    })
-                })
+                    });
+                });
+
+                //Render image
+                socket.on('render-image', function (data) {
+                    if ("{{ $data['current_round']->isDrawer() }}") {
+                        $('#wPaint').hide();
+                        $('#word').append('Please waiting...');
+                    } else {
+                        $('.chat_area').append('<img id="image" src="' + data.current_round.image + '">');
+                        $('.chat_area').append('<input id="answer" type="text" name="answer" class="form-control" placeholder="Type your answer">');
+                        $('.chat_area').append('<a id="submit-answer" href="javascript:;" class="pull-right btn btn-success">{{ trans('front-end/room.buttons.submit') }}</a>');
+                    }
+                });
+
+                //Submit answer
+                $(document).on('click', '#submit-answer', function (){
+                    var url = '/rooms/submit-answer';
+                    $.ajax({
+                        method: 'POST',
+                        url: url,
+                        data: {id: "{{ $data['room']->id }}", answer: $('#answer').val()},
+                        dataType: 'json',
+                        success: function (data, textStatus, jqXHR) {
+                            socket.emit('post-answer', data, room);
+                        }
+                    });
+                });
+
+                //Render result
+                socket.on('render-result', function (data) {
+                    $('#answer').remove();
+                    $('#image').remove();
+                    $('#send-image').remove();
+                    $('#submit-answer').remove();
+                    $('#result').html('Answer of guesser is ' + data.current_round.answer + ' ,and the true answer is' + " {{ $data['current_round']->word->content }}");
+                    if ("{{ $data['current_round']->isDrawer() }}") {
+                        $('#result').append('<a href="javascript:;" id="new-round" class="btn btn-primary">{{ trans('front-end/room.buttons.new-round') }}</a>');
+                    }
+                });
+
+                //New round
+                $(document).on('click', '#new-round', function () {
+                    var url = '/rooms/new-round';
+                    $.ajax({
+                        method: 'POST',
+                        url: url,
+                        data: {id: "{{ $data['room']->id }}"},
+                        dataType: 'json',
+                        success: function (data, textStatus, jqXHR) {
+                            socket.emit('new-round', room);
+                        }
+                    });
+                });
+
+                //Get new round
+                socket.on('get-new-round', function () {
+                    location.reload();
+                });
             };
 
             var timer = function() {
