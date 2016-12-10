@@ -99,6 +99,8 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
     {   
         $data['room'] = $this->model->findOrFail($id);
         $data['result'] = $data['room']->results()->first();
+        $data['results'] = $data['room']->results()->get();
+        $data['current_round'] = $data['room']->results()->orderBy('id', 'desc')->first();
         $data['drawer'] = $data['result']->drawer;
         $data['guesser'] = $data['result']->guesser;
 
@@ -205,7 +207,6 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         return $data['room']->state;
     }
 
-
     /**
      * Begin to play in a room
      *
@@ -235,6 +236,30 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         }
 
         $data['word'] = $data['result']->word;
+
+        return $data;
+    }
+
+    /**
+     * Begin to play in a room
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function postImage($id, $image)
+    {   
+        $data['room'] = $this->model->findOrFail($id);
+        $data['current_round'] = $data['room']->results()->orderBy('id', 'desc')->first();
+
+        //Update image
+        $data['current_round']->fill([
+            'image' => $image
+            ]);
+
+        if (!$data['current_round']->save()) {
+            throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
+        }
 
         return $data;
     }

@@ -151,8 +151,24 @@
                                 $('#wPaint').hide();
                                 $('#word').html('Please waiting...');
                             }
+                            $('.is-ready').html('<button class="btn btn-success btn-sm pull-right">Playing</button>');
+                            $('#ready-button').hide();
                         }
                     });
+                })
+
+                //Send image
+                $('#send-image').on('click', function (){
+                    var url = '/rooms/send-image';
+                    $.ajax({
+                        method: 'POST',
+                        url: url,
+                        data: {id: "{{ $data['room']->id }}", image:$('#wPaint').wPaint('image')},
+                        dataType: 'json',
+                        success: function (data, textStatus, jqXHR) {
+                            console.log(data);
+                        }
+                    })
                 })
             };
 

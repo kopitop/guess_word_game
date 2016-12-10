@@ -29,7 +29,7 @@ io.sockets.on('connection', function(socket) {
       io.sockets.to(room).emit('a-player-click-ready',ready ,userid);
     });
     socket.on('all-ready', function (room) {
-      console.log('all ready');
+      console.log('ready to play');
       io.sockets.to(room).emit('start-to-play');
     });
 });

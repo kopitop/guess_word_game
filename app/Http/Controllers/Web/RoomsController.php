@@ -219,4 +219,28 @@ class RoomsController extends BaseController
         }
         
     }
+
+
+    /**
+     * Begin to play in the specified room.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function postImage(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $input = $request->only('id', 'image');
+            $data = $this->repository->postImage($input['id'], $input['image']);
+            DB::commit();
+
+            return response()->json($data);
+        } catch (RoomException $e) {
+            Log::debug($e);
+            DB::rollback();
+
+            return response()->json(trans('front-end/room.init-play.failed'));
+        }
+    }
 }

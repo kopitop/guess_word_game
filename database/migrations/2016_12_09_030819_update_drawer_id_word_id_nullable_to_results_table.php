@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateDrawerIdWordIdNullableToRoomsTable extends Migration
+class UpdateDrawerIdWordIdNullableToResultsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -26,7 +26,9 @@ class UpdateDrawerIdWordIdNullableToRoomsTable extends Migration
      */
     public function down()
     {
-        $table->integer('drawer_id')->unsigned()->change();
-        $table->integer('word_id')->unsigned()->change();
+        Schema::table('results', function (Blueprint $table) {
+            $table->integer('drawer_id')->unsigned()->change();
+            $table->integer('word_id')->unsigned()->change();
+        });
     }
 }
