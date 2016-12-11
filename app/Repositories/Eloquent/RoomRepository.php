@@ -122,6 +122,11 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         $data['result'] = $data['room']->results()->first();
 
         //If there is not any result, throw exception
+        if ($data['room']->status == config('room.status.playing') || $data['room']->status == config('room.status.closed')) {
+            throw new RoomException(trans('front-end/room.exception.failed'));
+        }
+
+        //If there is not any result, throw exception
         if (!$data['result']) {
             throw new RoomException(trans('front-end/room.exception.failed'));
         }

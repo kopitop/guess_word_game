@@ -2,6 +2,7 @@ var app = require('http').createServer(handler)
 var io = require('socket.io')(app);
 var fs = require('fs');
 var request = require('request');
+var mysql = require('mysql');
 
 app.listen(3000);
 
@@ -21,9 +22,30 @@ function handler (req, res) {
 io.sockets.on('connection', function(socket) {
     var roomId;
     socket.on('joined', function (room) {
-        roomId = room;
-        socket.join(room);
-        io.sockets.to(room).emit('new-player-connected');
+      roomId = room;
+      socket.join(room);
+      io.sockets.to(room).emit('new-player-connected');
+      console.log(roomId);
+      var pattern = /-(\d+)/;
+      id = pattern.exec(roomId);
+      console.log(id[1]);
+      var pool = mysql.createPool({
+        host: 'localhost',
+        user: 'root',
+        password: 'root',
+        database: 'gwg',
+      });
+      var sql = "UPDATE rooms SET state=3 WHERE (id=" + Math.abs(parseInt(id)) + " AND state=7)";
+      var sql2 = "UPDATE rooms SET state=1 WHERE (id=" + Math.abs(parseInt(id)) + " AND state=5)";
+      console.log(sql);
+      pool.query(sql, function(error, result){
+        if (error) throw error;
+        console.log(result);
+      });
+      pool.query(sql2, function(error, result){
+        if (error) throw error;
+        console.log(result);
+      });
     });
     socket.on('quit', function (room) {
       io.sockets.to(room).emit('a-player-quit');
@@ -47,6 +69,26 @@ io.sockets.on('connection', function(socket) {
       io.sockets.to(room).emit('close-room');
     });
     socket.on('disconnect', function () {
-      console.log(roomId)
+      console.log(roomId);
+      var pattern = /-(\d+)/;
+      id = pattern.exec(roomId);
+      console.log(id[1]);
+      var pool = mysql.createPool({
+        host: 'localhost',
+        user: 'root',
+        password: 'root',
+        database: 'gwg',
+      });
+      var sql = "UPDATE rooms SET state=3 WHERE (id=" + Math.abs(parseInt(id)) + " AND state=7)";
+      var sql2 = "UPDATE rooms SET state=1 WHERE (id=" + Math.abs(parseInt(id)) + " AND state=5)";
+      console.log(sql);
+      pool.query(sql, function(error, result){
+        if (error) throw error;
+        console.log(result);
+      });
+      pool.query(sql2, function(error, result){
+        if (error) throw error;
+        console.log(result);
+      });
     });
 });
