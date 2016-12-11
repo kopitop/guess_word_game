@@ -74,7 +74,8 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
 
         //Update state of the room
         $room['state'] = 
-        	$data['room']->state & config('room.state.player-1-joined') ? 
+        	$data['room']->state & config('room.state.player-1-joined') ||
+            $data['room']->state & config('room.state.player-2-joined') ? 
 	        $data['room']->state | config('room.state.player-2-joined') :
 	        $data['room']->state | config('room.state.player-1-joined')
         ;
@@ -145,11 +146,15 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
             throw new RoomException(trans('front-end/room.exception.failed'), config('room.exception.failed'));
         }
 
-        //Update state of the room
+        //Remove ready state
+        $room['state'] = $data['room']->state ^ config('room.state.player-1-ready');
+
+        //Update join state of the room
         $room['state'] = 
-            $data['room']->state == (config('room.state.player-1-joined') & config('room.state.player-2-joined'))? 
-            $data['room']->state ^ config('room.state.player-2-joined') :
-            $data['room']->state ^ config('room.state.player-1-joined')
+            $data['room']->state & config('room.state.player-1-joined') && 
+            $data['room']->state & config('room.state.player-2-joined') ? 
+            $room['state'] ^ config('room.state.player-2-joined') :
+            $room['state'] ^ config('room.state.player-1-joined')
         ;
 
         //Update status of the room
@@ -190,12 +195,9 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         } else {
             //Remove unready player
             $room['state'] = 
-                ($data['room']->state & config('room.state.player-1-ready')
-                &&
-                $data['room']->state & config('room.state.player-2-ready'))
-                ? 
-                $data['room']->state ^ config('room.state.player-2-ready') :
-                $data['room']->state ^ config('room.state.player-1-ready')
+                $data['room']->state & config('room.state.player-1-ready') ?
+                $data['room']->state ^ config('room.state.player-1-ready') :
+                $data['room']->state
             ;
         }
 

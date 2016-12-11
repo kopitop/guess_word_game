@@ -126,7 +126,7 @@
                             } else {
                                 $('.guesser .player-name').html('');
                             }
-
+                            $('.is-ready').html('');
                         }
                     });
                 }
@@ -278,7 +278,7 @@
                     location.reload();
                 });
 
-                //Finish
+                //When a player click finish, we'll close the room
                 $(document).on('click', '#finish-button', function () {
                     var url = '/rooms/finish';
                     $.ajax({
@@ -292,7 +292,7 @@
                     });
                 });
 
-                //Close room
+                //After closing room, we need to refresh page of players
                 socket.on('close-room', function () {
                     location.reload();
                 });

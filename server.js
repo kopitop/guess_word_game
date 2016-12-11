@@ -1,6 +1,7 @@
 var app = require('http').createServer(handler)
 var io = require('socket.io')(app);
 var fs = require('fs');
+var request = require('request');
 
 app.listen(3000);
 
@@ -18,7 +19,9 @@ function handler (req, res) {
 }
 
 io.sockets.on('connection', function(socket) {
+    var roomId;
     socket.on('joined', function (room) {
+        roomId = room;
         socket.join(room);
         io.sockets.to(room).emit('new-player-connected');
     });
@@ -42,5 +45,8 @@ io.sockets.on('connection', function(socket) {
     });
     socket.on('finish', function (room) {
       io.sockets.to(room).emit('close-room');
+    });
+    socket.on('disconnect', function () {
+      console.log(roomId)
     });
 });
