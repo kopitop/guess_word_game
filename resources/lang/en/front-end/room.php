@@ -35,4 +35,22 @@ return [
             'database' => 'A system error has occured.'
         ]
     ],
+    'waiting' => 'Please wait for a moment',
+    'player' => 'Player',
+    'history' => 'History',
+    'info' => 'Info',
+    'panel' => 'Panel',
+    'word' => 'Word',
+    'guesser' => [
+        'waiting' => 'Please waiting for the drawer',
+        'type-answer' => 'Type your answer here :D'
+    ],
+    'drawer' => [
+        'waiting' => 'Your image has been sent, please wait for the response',
+    ],
+    'result-detail' => 'The answer of the guesser is <strong>:answer</strong>, and the correct answer is <strong>:true-answer</strong>',
+    'result' => [
+        0 => 'The answer is wrong, try hard next time',
+        1 => 'Congratulation !!!',
+    ],
 ];

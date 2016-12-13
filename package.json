@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "mysql": "^2.12.0",
-    "socket.io": "^1.7.1"
+    "socket.io": "^1.7.1",
+    "wPaint": "github:websanova/wPaint"
   }
 }

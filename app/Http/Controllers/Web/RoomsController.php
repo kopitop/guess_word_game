@@ -73,7 +73,9 @@ class RoomsController extends BaseController
      */
     public function show($id)
     {
-        //
+        $this->viewData['data'] = $this->repository->show($id);
+
+        return view('front-end.room.detail', $this->viewData);
     }
 
     /**

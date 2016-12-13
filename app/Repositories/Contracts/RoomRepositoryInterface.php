@@ -12,4 +12,12 @@ interface RoomRepositoryInterface extends RepositoryInterface
      * @return mixed
      */
     public function joinRoom($id);
+    /**
+     * Show a room
+     *
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function show(int $id);
 }

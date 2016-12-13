@@ -35,3 +35,22 @@ function getOptions($options) {
 
     return $results;
 }
+
+//Check status of a round
+function getPlayingPanelView($round) {
+    if ($round->isDrawer()) {
+        $role = 'drawer';
+    } else {
+        $role = 'guesser';
+    }
+
+    if (!$round->word) {
+        return config('room.' . $role . '.view.word');
+    } elseif (!$round->image) {
+        return config('room.' . $role . '.view.image');
+    } elseif (!$round->answer) {
+        return config('room.' . $role . '.view.answer');
+    }
+
+    return config('room.' . $role . '.view.result');
+}

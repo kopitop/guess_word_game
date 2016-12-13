@@ -32,7 +32,7 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         $room['status'] = config('room.status.empty');
 
         return $this->model->create($room)
-        	->results()->create([]);
+            ->results()->create([]);
     }
 
     /**
@@ -87,6 +87,29 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
             throw new RoomException(trans('front-end/room.join.exception.database'));
         }
 
+        return $data;
+    }
+
+    /**
+     * Show a room
+     *
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function show(int $id)
+    {   
+        $data['room'] = $this->model->with([
+            'results' => function ($query) {
+                $query->with('word');
+            },
+            'info', 
+            'resultsCount'
+        ])->findOrFail($id);
+        
+        $data['info'] = $data['room']->info->load('drawer', 'guesser');
+        $data['current_round'] = $data['room']->results->last();
+        
         return $data;
     }
 }
