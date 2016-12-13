@@ -8,12 +8,16 @@
                     <a href="#" class="list-group-item"><strong>{{ trans('front-end/room.description') }}: </strong>{{ $data['room']->description }}</a>
                     <a href="#" class="list-group-item drawer">
                         <strong>{{ trans('front-end/room.player') }}: 
-                        <span class="player-name">{{ $data['info']->drawer->name }}</span>
+                            <span class="player-name">
+                                {{ isset($data['info']->drawer->name) ? $data['info']->drawer->name : '' }}
+                            </span>
                         </strong>
                     </a>
                     <a href="#" class="list-group-item guesser">
                         <strong>{{ trans('front-end/room.player') }}: 
-                        <span class="player-name">{{ $data['info']->guesser->name }}</span>
+                            <span class="player-name">
+                                {{ isset($data['info']->guesser->name) ? $data['info']->guesser->name : '' }}
+                            </span>
                         </strong>
                     </a>
                 </div>
@@ -96,4 +100,9 @@
             @include('layouts.includes.playpanel')
         </div>
     </div>
+    <script type="text/javascript">
+        var roomId = "{{ $data['room']->id }}";
+    </script>
+    {!! Html::script('http://localhost:3000/socket.io/socket.io.js'); !!}
+    {!! Html::script(elixir('js/realtime.js')) !!}
 @endsection

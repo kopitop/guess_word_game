@@ -19,6 +19,10 @@ elixir(mix => {
             'resources/assets/images/*',
             'public/images/'
         )
+        .copy(
+            'resources/assets/js/realtime.js',
+            'public/js'
+        )
         .scripts([
             'wPaint/lib/jquery.ui.core.1.10.3.min.js',
             'wPaint/lib/jquery.ui.widget.1.10.3.min.js',

@@ -136,4 +136,18 @@ class RoomsController extends BaseController
                 ->withErrors($e->getMessage());
         }
     }
+
+    /**
+     * Refresh the specified room.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function refresh(Request $request)
+    {   
+        $id = $request->only('id')['id'];
+        $data = $this->repository->show($id);
+
+        return response()->json($data);
+    }
 }
