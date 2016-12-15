@@ -15,6 +15,7 @@
                             <span class="player-name">
                                 {{ isset($data['info']->drawer->name) ? $data['info']->drawer->name : '' }}
                             </span>
+                            <span class="is-ready"></span>
                         </strong>
                     </a>
                     <a href="#" class="list-group-item guesser">
@@ -22,6 +23,7 @@
                             <span class="player-name">
                                 {{ isset($data['info']->guesser->name) ? $data['info']->guesser->name : '' }}
                             </span>
+                            <span class="is-ready"></span>
                         </strong>
                     </a>
                 </div>
@@ -78,22 +80,16 @@
 
             <div class="action-room">
                 <div class="form-group clearfix">
-                    @if (
-                        ($data['room']->status == config('room.status.waiting')) || 
-                        ($data['room']->status == config('room.status.full'))
-                    )
-                    <a id="quit-button" class="btn btn-danger" href="javascript:;">
-                        {{ trans('front-end/room.buttons.quit') }}
-                    </a>
-                    <a id="ready-button" class="btn btn-success" href="javascript:;">
-                        {{ trans('front-end/room.buttons.ready') }}
-                    </a>
-                    <input type="hidden" name="ready" id="ready-status" value="0">
-                    @elseif ($data['room']->status == config('room.status.playing'))
-                    <a id="finish-button" class="btn btn-warning" href="javascript:;">
-                        {{ trans('front-end/room.buttons.finish') }}
-                    </a> 
-                    @endif
+                    <!-- render playing panel depend on current round and current room -->
+                    @widget('roomInfoPanel', [], $data['room']->status)
+                    <div class="ready-block">
+                        @if($data['room']->status == config('room.status.full'))
+                            <a id="ready-button" class="btn btn-success" href="javascript:;">
+                                {{ trans('front-end/room.buttons.ready') }}
+                            </a>
+                            <input type="hidden" name="ready" id="ready-status" value="0">
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,5 +103,7 @@
     <script type="text/javascript">
         var roomId = "{{ $data['room']->id }}";
         var userRole = "{{ $data['info']->isDrawer() ? 'drawer' : 'guesser' }}";
+        var readyButton = "{{ trans('front-end/room.buttons.ready') }}"
+        var userId = "{{ Auth::user()->id }}"
     </script>
 @endsection

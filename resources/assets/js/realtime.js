@@ -21,6 +21,11 @@
                     }
                 );
             },
+            beginPlay: function (data) {
+                $('#word').html(data.word.content);
+                $('.is-ready').html('<button class="btn btn-success btn-sm pull-right">Playing</button>');
+                $('#ready-button').hide();
+            }
         }
 
         //define drawer object
@@ -37,6 +42,12 @@
                     }
                 );
             },
+            beginPlay: function (data) {
+                $('#wPaint').hide();
+                $('#word').html('Please waiting...');
+                $('.is-ready').html('<button class="btn btn-success btn-sm pull-right">Playing</button>');
+                $('#ready-button').hide();
+            }
         }
 
         //Define common functions
@@ -54,6 +65,14 @@
                 $('.guesser .player-name').html('');
             }
             $('.is-ready').html('');
+            if (data.room.status == 2) {
+                $('.ready-block').html(
+                    '<a id="ready-button" class="btn btn-success" href="javascript:;">'
+                    + readyButton +
+                    '</a>\
+                    <input type="hidden" name="ready" id="ready-status" value="0">'
+                );
+            }
         }
 
         function showError() {
@@ -76,6 +95,57 @@
 
         //Get new players data when someone joining the room
         socket.on('new-player-connected', eval(userRole + '.refresh'));
+
+        //When a user click ready, we'll update state of the room in the database and info panel
+        $(document).on('click','#ready-button', function () {
+            $('#ready-status').val(($('#ready-status').val() == 1) ? 0 : 1);
+            var url = '/rooms/ready';
+            $.ajax({
+                method: 'POST',
+                url: url,
+                data: {id: roomId, ready: parseInt($('#ready-status').val())},
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 200) {
+                        socket.emit('ready', parseInt($('#ready-status').val()), userId);
+
+                        //And if both of players 'r ready, we'll start the game
+                        if (data.state == 15) {
+                            socket.emit('all-ready');
+                        }
+                    } else {
+                        showError();
+                    }
+                }
+            });
+        });
+
+        //Updating state of players on the info panel
+        socket.on('update-state', function (ready, userId) {
+            if ($('.drawer').data('userid') == userId && ready == 1) {
+                $('.drawer .is-ready').append('<a href="javascript:;" class="btn btn-info btn-sm pull-right">Ready</a>');
+            } else if ($('.drawer').data('userid') == userId && ready == 0) {
+                $('.drawer .is-ready').text('');
+            }
+
+            if ($('.guesser').data('userid') == userId && ready == 1) {
+                $('.guesser .is-ready').append('<a href="javascript:;" class="btn btn-info btn-sm pull-right">Ready</a>');
+            } else if ($('.guesser').data('userid') == userId && ready == 0) {
+                $('.guesser .is-ready').text('');
+            }
+        })
+
+        //Start the game
+        socket.on('start-to-play', function () {
+            var url = '/rooms/start-to-play'
+            $.ajax({
+                method: 'POST',
+                url: url,
+                data: {id: roomId},
+                dataType: 'json',
+                success: eval(userRole + '.beginPlay')
+            });
+        })
     }
 
     var timer = function() {

@@ -35,4 +35,14 @@ io.sockets.on('connection', function(socket) {
         }
         request(option);
     });
+
+    //When a player click ready, we'll refresh ready state on room's info panel
+    socket.on('ready', function (ready, userId) {
+        io.sockets.to(roomId).emit('update-state',ready ,userId);
+    });
+
+    //When both players ready, we'll start the game
+    socket.on('all-ready', function () {
+        io.sockets.to(roomId).emit('start-to-play');
+    });
 });
