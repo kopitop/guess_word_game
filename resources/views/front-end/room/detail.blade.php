@@ -128,5 +128,6 @@
         var errorMessage = "{{ trans('front-end/room.error-message') }}";
         var placeholderAnswer = "{{ trans('common/placeholders.type-your-answer') }}";
         var imagePath = "{{ '/' . config('room.upload-path').$data['room']->id . '/' }}";
+        var newRoundButton = "{{ trans('front-end/room.buttons.new-round') }}";
     </script>
 @endpush

@@ -302,7 +302,7 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
 
         //If the room's not playing, throw Exception
         if ($data['room']->status != config('room.status.playing')) {
-            throw new Exception();
+            throw new Exception;
         }
 
         $data['current_round'] = $data['room']->results->last();
@@ -312,8 +312,45 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         $data['current_round']->image = base64ToImage($image, $path);
 
         if (!$data['current_round']->save()) {
-            throw new Exception();
+            throw new Exception;
         }
+
+        return $data;
+    }
+
+
+    /**
+     * Post an answer
+     *
+     * @param array $input
+     *
+     * @return mixed
+     */
+    public function postAnswer($input)
+    {   
+        $id = $input['id'];
+        $answer = $input['answer'];
+        $room = $this->model->findOrFail($id);
+        if ($room->status != config('room.status.playing')) {
+            throw new Exception;
+        }
+
+        $current_round = $room->results->last();
+
+        //Update image
+        $current_round->fill([
+            'answer' => $answer,
+            'is_correct' => $current_round->word->content == $answer
+        ]);
+
+        if (!$current_round->save()) {
+            throw new Exception;
+        }
+
+        $data = [
+            'room' => $room,
+            'current_round' =>  $current_round,
+        ];
 
         return $data;
     }
