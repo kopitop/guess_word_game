@@ -125,12 +125,15 @@
         var userId = "{{ Auth::user()->id }}";
         var sendButton = "{{ trans('front-end/room.buttons.send') }}";
         var guesserWaiting = "{{ trans('front-end/room.guesser.waiting') }}";
+        var drawerWaiting = "{{ trans('front-end/room.drawer.waiting') }}";
         var roomStatus = "{{ $data['room']->status }}";
         var playingStatus = "{{ config('room.status.playing') }}";
         var fullStatus = "{{ config('room.status.full') }}";
-        var errorMessage = "{{ trans('front-end/room.error-message') }}"
         var authUserID = "{{ Auth::user()->id }}";
         var userName = "{{ Auth::user()->name }}";
         var avatarUser = "{{ Auth::user()->avatar_url ? asset((Auth::user()->avatar_url)) : asset(config('user.default-avatar')) }}";
+        var errorMessage = "{{ trans('front-end/room.error-message') }}";
+        var placeholderAnswer = "{{ trans('common/placeholders.type-your-answer') }}";
+        var imagePath = "{{ config('room.upload-path').$data['room']->id }}";
     </script>
 @endpush

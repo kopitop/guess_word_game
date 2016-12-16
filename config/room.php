@@ -19,4 +19,5 @@ return [
         'true' => 1,
         'false' => 0,
     ],
+    'upload-path' => '/images/uploads/room/'
 ];

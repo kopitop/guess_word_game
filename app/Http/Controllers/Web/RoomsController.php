@@ -255,4 +255,30 @@ class RoomsController extends BaseController
 
         return response()->json($dataResponse);
     }
+
+    /**
+     * Post image after drawing
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postImage(Request $request)
+    {
+        $dataResponse['status'] = 500; //Unspecified error
+        DB::beginTransaction();
+        try {
+            $input = $request->only('id', 'image');
+            $data = $this->repository->postImage($input);
+            if ($data) {
+                $dataResponse['status'] = 200; //OK
+                $dataResponse['data'] = $data;
+                DB::commit();
+            }
+        } catch (Exception $e) {
+            Log::debug($e);
+            DB::rollback();
+        }
+
+        return response()->json($dataResponse);
+    }
 }

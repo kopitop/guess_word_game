@@ -60,4 +60,9 @@ io.sockets.on('connection', function(socket) {
     socket.on('user-send-message', function(data) {
         io.sockets.to(roomId).emit('get-new-message', data);
     });
+    
+    //When the drawer sent image, we'll render image on the clients
+    socket.on('image-sent', function (data) {
+        io.sockets.to(roomId).emit('render-image', data);
+    });
 });

@@ -39,7 +39,16 @@
                     '</a>\
                 ');
                 $('#wPaint').wPaint();
-            }
+            },
+            renderImage: function (data) {
+                $('#play-panel').html(
+                    '<img id="image" src="'
+                        + imagePath + '/' + data.current_round.image +
+                    '">\
+                    <h3>' + drawerWaiting + '</h3>\
+                    <h3 id="result"></h3>'
+                );
+            },
         }
 
         //define drawer object
@@ -71,8 +80,20 @@
                     '</h3>\
                     <h3 id="result"></h3>'
                 );
-
-            }
+            },
+            renderImage: function (data) {
+                $('#play-panel').html(
+                    '<img id="image" src="'
+                        + imagePath + '/' + data.current_round.image +
+                    '">\
+                    <input id="answer" type="text" class="form-control" placeholder="'
+                        + placeholderAnswer +
+                    '"><h3 id="result"></h3>\
+                    <a id="submit-answer" href="javascript:;" class="pull-right btn btn-success">'
+                        + sendButton +
+                    '</a>'
+                );
+            },
         }
 
         //Define common functions
@@ -215,7 +236,6 @@
 
             //append new message to chat box
             socket.on('get-new-message', function(data) {
-                console.log(data);
                 var chat = $("#chat");
                 chat.append (
                     '<li class="' + (authUserID == data.sender_id ?  'right' : 'left')+ ' clearfix">\
@@ -234,6 +254,21 @@
                     </li>'
                 ).parent().animate({ scrollTop: chat.height() }, 300); // scroll to bottom after load new message
             });
+
+        //When the drawer click send image
+        $(document).on('click','#send-image', function () {
+            var url = laroute.route('rooms.post-image');
+            $.post(url, {id: roomId, image:$('#wPaint').wPaint('image')}, function (response) {
+                if (response.status == 200) {
+                    socket.emit('image-sent', response.data);
+                } else {
+                    showError();
+                }
+            });
+        });
+
+        //Rendering new play panel when the drawer 's sent image
+        socket.on('render-image', eval(userRole + '.renderImage'));
     }
 
     var timer = function() {
