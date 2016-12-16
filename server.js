@@ -56,4 +56,9 @@ io.sockets.on('connection', function(socket) {
     socket.on('quit', function () {
         io.sockets.to(roomId).emit('a-player-quit');
     });
+
+    //When the drawer sent image, we'll render image on the clients
+    socket.on('image-sent', function (data) {
+        io.sockets.to(roomId).emit('render-image', data);
+    });
 });

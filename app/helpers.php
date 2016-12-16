@@ -35,3 +35,18 @@ function getOptions($options) {
 
     return $results;
 }
+
+//Save image to file
+if (!function_exists('base64ToImage')) {
+    function base64ToImage($base64String, $path) {
+        $data = explode(',', $base64String);
+        $outputFile = str_random(40). '.png';
+        $uploadDir = public_path(sprintf($path));
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir,755, true);
+        }
+        file_put_contents($uploadDir . '/' . $outputFile, base64_decode($data[1]));
+
+        return $outputFile; 
+    }
+}

@@ -286,4 +286,35 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
 
         return true;
     }
+
+    /**
+     * Post an image
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function postImage($input)
+    {   
+        $id = $input['id'];
+        $image = $input['image'];
+        $data['room'] = $this->model->findOrFail($id);
+
+        //If the room's not playing, throw Exception
+        if ($data['room']->status != config('room.status.playing')) {
+            throw new Exception();
+        }
+
+        $data['current_round'] = $data['room']->results->last();
+
+        //Save image
+        $path = config('room.upload-path').$data['room']->id;
+        $data['current_round']->image = base64ToImage($image, $path);
+
+        if (!$data['current_round']->save()) {
+            throw new Exception();
+        }
+
+        return $data;
+    }
 }

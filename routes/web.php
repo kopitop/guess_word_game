@@ -26,6 +26,7 @@ Route::group(['namespace' => 'Web', 'middleware' => 'auth'], function () {
     Route::post('rooms/refresh', 'RoomsController@refresh')->name('rooms.refresh');
     Route::post('rooms/ready', 'RoomsController@updateReadyState')->name('rooms.ready');
     Route::post('rooms/quit', 'RoomsController@quit')->name('rooms.quit');
+    Route::post('rooms/post-image', 'RoomsController@postImage')->name('rooms.post-image');
     Route::resource('rooms', 'RoomsController', ['only' => [
         'index', 'store', 'show',
     ]]);
