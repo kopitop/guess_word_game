@@ -269,7 +269,7 @@
 
         //Rendering new play panel when the drawer 's sent image
         socket.on('render-image', eval(userRole + '.renderImage'));
-        
+
         //Submit answer
         $(document).on('click', '#submit-answer', function (){
             var url = laroute.route('rooms.post-answer');
@@ -284,6 +284,23 @@
 
         //Reload to update result after guesser's sent answer 
         socket.on('render-result', function () {
+            location.reload();
+        });
+        
+        //New round
+        $(document).on('click', '#new-round', function () {
+            var url = laroute.route('rooms.new-round');
+            $.post(url, {id: roomId}, function (response) {
+                if (response.status == 200) {
+                    socket.emit('new-round');
+                } else {
+                    showError();
+                }
+            });
+        });
+
+        //Get new round
+        socket.on('get-new-round', function () {
             location.reload();
         });
     }

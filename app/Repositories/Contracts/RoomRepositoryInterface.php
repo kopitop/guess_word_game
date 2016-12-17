@@ -66,7 +66,7 @@ interface RoomRepositoryInterface extends RepositoryInterface
      * @return mixed
      */
     public function postImage($input);
-    
+
     /**
      * Post an answer
      *
@@ -75,4 +75,13 @@ interface RoomRepositoryInterface extends RepositoryInterface
      * @return mixed
      */
     public function postAnswer($input);
+
+    /**
+     * Create a new round
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function createNewRound($input);
 }

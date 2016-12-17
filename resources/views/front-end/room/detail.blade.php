@@ -118,7 +118,7 @@
 @push('script')
     <script type="text/javascript">
         var roomId = "{{ $data['room']->id }}";
-        var userRole = "{{ $data['info']->isDrawer() ? 'drawer' : 'guesser' }}";
+        var userRole = "{{ $data['current_round']->isDrawer() ? 'drawer' : 'guesser' }}";
         var readyButton = "{{ trans('front-end/room.buttons.ready') }}";
         var playingButton = "{{ trans('front-end/room.buttons.playing') }}";
         var finishButton = "{{ trans('front-end/room.buttons.finish') }}";

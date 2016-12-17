@@ -281,7 +281,7 @@ class RoomsController extends BaseController
 
         return response()->json($dataResponse);
     }
-    
+
     /**
      * Post answer
      *
@@ -300,6 +300,31 @@ class RoomsController extends BaseController
                 $dataResponse['data'] = $data;
                 DB::commit();
             }
+        } catch (Exception $e) {
+            Log::debug($e);
+            DB::rollback();
+        }
+
+        return response()->json($dataResponse);
+    }
+    
+    /**
+     * Get new round for the specified room.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function postNewRound(Request $request)
+    {
+        $dataResponse['status'] = 500; //Unspecified error
+        DB::beginTransaction();
+        try {
+            $input = $request->only('id');
+            if ($this->repository->createNewRound($input)) {
+                $dataResponse['status'] = 200; //OK
+                DB::commit();
+            }
+
         } catch (Exception $e) {
             Log::debug($e);
             DB::rollback();
