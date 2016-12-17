@@ -325,7 +325,7 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
      *
      * @return mixed
      */
-    public function postAnswer($input)
+    public function postAnswer(array $input)
     {   
         $id = $input['id'];
         $answer = $input['answer'];
@@ -334,21 +334,21 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
             throw new Exception;
         }
 
-        $current_round = $room->results->last();
+        $currentRound = $room->results->last();
 
-        //Update image
-        $current_round->fill([
+        //Update result
+        $currentRound->fill([
             'answer' => $answer,
-            'is_correct' => $current_round->word->content == $answer
+            'is_correct' => $currentRound->word->content == $answer
         ]);
 
-        if (!$current_round->save()) {
+        if (!$currentRound->save()) {
             throw new Exception;
         }
 
         $data = [
             'room' => $room,
-            'current_round' =>  $current_round,
+            'current_round' =>  $currentRound,
         ];
 
         return $data;

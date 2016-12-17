@@ -11,6 +11,7 @@
     <title>{{ config('app.name') }}</title>
 
     <!-- Styles -->
+    {!! Html::style(elixir('css/vendor.css')) !!}
     {!! Html::style(elixir('css/app.css')) !!}
     @stack('style')
 </head>
@@ -87,5 +88,6 @@
     @stack('script')
     {!! Html::script(elixir('js/app.js')) !!}
     {!! Html::script(elixir('js/vendor.js')) !!}
+    @stack('datatables')
 </body>
 </html>

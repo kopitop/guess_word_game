@@ -18,8 +18,10 @@ elixir(mix => {
             'app.scss',
             'effect.scss',
         ], 'public/css')
-        .copy(
+        .copy([
             'resources/assets/images/*',
+            'node_modules/datatables/media/images/',
+        ],
             'public/images/'
         )
         .scripts([
@@ -35,16 +37,20 @@ elixir(mix => {
             'wPaint/plugins/file/wPaint.menu.main.file.min.js',
             'chart.js/dist/Chart.js',
             'socket.io-client/dist/socket.io.min.js',
-            './resources/assets/js/laroute.js'
+            './resources/assets/js/laroute.js',
+            'datatables/media/js/jquery.dataTables.min.js',
+            './vendor/yajra/laravel-datatables-oracle/src/resources/assets/buttons.server-side.js'
        	], 'public/js/vendor.js', './node_modules/')
         .styles([
             'wPaint/lib/wColorPicker.min.css',
             'wPaint/wPaint.min.css',
+            'datatables/media/css/jquery.dataTables.min.css',
         ], 'public/css/vendor.css', 'node_modules')
         .copy('node_modules/bootstrap-sass/assets/fonts', 'public/fonts')
         .copy([
             'node_modules/wPaint/plugins/',
         ], 'public/plugins')
         .sass('error.scss')
+        .sass('chat.scss')
         .webpack('app.js');
 });

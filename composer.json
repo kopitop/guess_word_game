@@ -12,7 +12,8 @@
         "lord/laroute" : "2.*",
         "arrilot/laravel-widgets": "^3.6",
         "doctrine/dbal": "^2.5",
-        "kyslik/column-sortable": "~5.0"
+        "kyslik/column-sortable": "~5.0",
+        "yajra/laravel-datatables-oracle": "^6.22"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

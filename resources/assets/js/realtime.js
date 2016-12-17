@@ -323,7 +323,7 @@
     }
 
     var timer = function() {
-        if (window.jQuery && window.jQuery.ui) {
+        if (window.jQuery && window.jQuery.ui && typeof roomStatus != 'undefined') {
             runMyCode(window.jQuery);
         } else {
             window.setTimeout(timer, 100);

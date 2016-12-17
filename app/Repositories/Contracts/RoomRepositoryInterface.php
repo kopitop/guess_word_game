@@ -74,7 +74,7 @@ interface RoomRepositoryInterface extends RepositoryInterface
      *
      * @return mixed
      */
-    public function postAnswer($input);
+    public function postAnswer(array $input);
 
     /**
      * Create a new round

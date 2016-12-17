@@ -171,6 +171,7 @@ return [
         Lord\Laroute\LarouteServiceProvider::class,
         Arrilot\Widgets\ServiceProvider::class,
         Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
+        Yajra\Datatables\DatatablesServiceProvider::class,
 
         //
 
@@ -235,6 +236,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Widget' => Arrilot\Widgets\Facade::class,
         'AsyncWidget' => Arrilot\Widgets\AsyncFacade::class,
+        'Datatables' => Yajra\Datatables\Facades\Datatables::class,
 
     ],
 
