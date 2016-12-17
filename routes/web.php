@@ -29,6 +29,7 @@ Route::group(['namespace' => 'Web', 'middleware' => 'auth'], function () {
     Route::post('rooms/post-image', 'RoomsController@postImage')->name('rooms.post-image');
     Route::post('rooms/post-answer', 'RoomsController@postAnswer')->name('rooms.post-answer');
     Route::post('rooms/new-round', 'RoomsController@postNewRound')->name('rooms.new-round');
+    Route::post('rooms/finish', 'RoomsController@postFinish')->name('rooms.finish');
     Route::resource('rooms', 'RoomsController', ['only' => [
         'index', 'store', 'show',
     ]]);

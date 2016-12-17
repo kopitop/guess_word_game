@@ -307,7 +307,7 @@ class RoomsController extends BaseController
 
         return response()->json($dataResponse);
     }
-    
+
     /**
      * Get new round for the specified room.
      *
@@ -328,6 +328,27 @@ class RoomsController extends BaseController
         } catch (Exception $e) {
             Log::debug($e);
             DB::rollback();
+        }
+
+        return response()->json($dataResponse);
+    }
+    
+    /**
+     * Finish the game in the specified room.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postFinish(Request $request)
+    {
+        $dataResponse['status'] = 500; //Unspecified error
+        try {
+            $input = $request->only('id');
+            if($this->repository->finishRoom($input)) {
+                $dataResponse['status'] = 200;
+            }
+        } catch (Exception $e) {
+            Log::debug($e);
         }
 
         return response()->json($dataResponse);

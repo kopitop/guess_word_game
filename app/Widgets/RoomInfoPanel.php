@@ -17,5 +17,7 @@ class RoomInfoPanel extends AbstractWidget
         } elseif ($status == config('room.status.playing')) {
         	return view('front-end.room.info-panel.playing');
         }
+        
+        return '';
     }
 }

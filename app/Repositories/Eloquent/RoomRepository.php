@@ -353,7 +353,7 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
 
         return $data;
     }
-    
+
     /**
      * Create a new round
      *
@@ -382,6 +382,31 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
             'guesser_id' => $last_round->drawer_id,
             'word_id' => app(Word::class)->inRandomOrder()->first()->id,
         ]);
+
+        return true;
+    }
+    
+    /**
+     * Begin to play in a room
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function finishRoom($input)
+    {   
+        $id = $input['id'];
+        $room = $this->model->findOrFail($id);
+
+        if ($room->status != config('room.status.playing')) {
+            throw new Exception;
+        }
+
+        $room->status = config('room.status.closed');
+
+        if (!$room->save()) {
+            throw new Exception;
+        }
 
         return true;
     }

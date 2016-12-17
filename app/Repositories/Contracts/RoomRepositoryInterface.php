@@ -84,4 +84,13 @@ interface RoomRepositoryInterface extends RepositoryInterface
      * @return mixed
      */
     public function createNewRound($input);
+    
+    /**
+     * Begin to play in a room
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function finishRoom($input);
 }
