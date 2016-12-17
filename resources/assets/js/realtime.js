@@ -51,7 +51,7 @@
             },
         }
 
-        //define drawer object
+        //define guesser object
         var guesser = {
             refresh: function () {
                 var url = laroute.route('rooms.refresh');
@@ -269,6 +269,23 @@
 
         //Rendering new play panel when the drawer 's sent image
         socket.on('render-image', eval(userRole + '.renderImage'));
+        
+        //Submit answer
+        $(document).on('click', '#submit-answer', function (){
+            var url = laroute.route('rooms.post-answer');
+            $.post(url, {id: roomId, answer: $('#answer').val()}, function (response) {
+                if (response.status == 200) {
+                    socket.emit('answer-sent', response.data);
+                } else {
+                    showError();
+                }
+            });
+        });
+
+        //Reload to update result after guesser's sent answer 
+        socket.on('render-result', function () {
+            location.reload();
+        });
     }
 
     var timer = function() {

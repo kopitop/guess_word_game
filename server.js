@@ -65,4 +65,9 @@ io.sockets.on('connection', function(socket) {
     socket.on('image-sent', function (data) {
         io.sockets.to(roomId).emit('render-image', data);
     });
+    
+    //When the guesser sent answer, we'll render answer on the clients
+    socket.on('answer-sent', function (data) {
+        io.sockets.to(roomId).emit('render-result', data);
+    });
 });

@@ -66,4 +66,13 @@ interface RoomRepositoryInterface extends RepositoryInterface
      * @return mixed
      */
     public function postImage($input);
+    
+    /**
+     * Post an answer
+     *
+     * @param array $input
+     *
+     * @return mixed
+     */
+    public function postAnswer($input);
 }

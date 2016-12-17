@@ -281,4 +281,30 @@ class RoomsController extends BaseController
 
         return response()->json($dataResponse);
     }
+    
+    /**
+     * Post answer
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postAnswer(Request $request)
+    {
+        $dataResponse['status'] = 500; //Unspecified error
+        DB::beginTransaction();
+        try {
+            $input = $request->only('id', 'answer');
+            $data = $this->repository->postAnswer($input);
+            if ($data) {
+                $dataResponse['status'] = 200; //OK
+                $dataResponse['data'] = $data;
+                DB::commit();
+            }
+        } catch (Exception $e) {
+            Log::debug($e);
+            DB::rollback();
+        }
+
+        return response()->json($dataResponse);
+    }
 }
