@@ -172,6 +172,7 @@ return [
         Arrilot\Widgets\ServiceProvider::class,
         Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
         Khill\Lavacharts\Laravel\LavachartsServiceProvider::class,
+        Yajra\Datatables\DatatablesServiceProvider::class,
 
         //
 
@@ -236,6 +237,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Widget' => Arrilot\Widgets\Facade::class,
         'AsyncWidget' => Arrilot\Widgets\AsyncFacade::class,
+        'Datatables' => Yajra\Datatables\Facades\Datatables::class,
 
     ],
 

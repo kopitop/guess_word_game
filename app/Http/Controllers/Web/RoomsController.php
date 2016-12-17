@@ -11,6 +11,7 @@ use Exception;
 use App\Exceptions\RoomException;
 use Log;
 use DB;
+use App\DataTables\HighScoreDataTable;
 
 class RoomsController extends BaseController
 {
@@ -27,14 +28,14 @@ class RoomsController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(HighScoreDataTable $highScore)
     {
         $this->viewData['rooms'] = $this->repository
             ->where('status', '!=', config('room.status.closed'))
             ->orderBy('id', 'desc')
             ->paginate();
 
-        return view('front-end.room.index', $this->viewData);
+        return $highScore->render('front-end.room.index', $this->viewData);
     }
 
     /**

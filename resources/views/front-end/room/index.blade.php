@@ -51,7 +51,17 @@
 <div class="col-md-8">
     <div class="panel panel-default">
         <h3>{{ trans('front-end/room.leaderboard') }}</h3>
+        {!! $dataTable->table() !!}
+    </div>
+</div>
+<div class="col-md-offset-4 col-md-8">
+    <div class="panel panel-default">
+        <h3>{{ trans('front-end/room.chart') }}</h3>
         <canvas id="myChart" width="400" height="400"></canvas>
     </div>
 </div>
+
 @endsection
+@push('datatables')
+{!! $dataTable->scripts() !!}
+@endpush
