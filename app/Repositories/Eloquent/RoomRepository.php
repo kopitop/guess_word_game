@@ -410,4 +410,27 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
 
         return true;
     }
+
+    /**
+     * Get chart data for homepage
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function getChartData()
+    {
+        $rooms = $this->model
+            ->select('id')
+            ->where('status', '=', config('room.status.playing'))
+            ->with('results')
+            ->get();
+
+        foreach ($rooms as $key => $room) {
+            $chartData[$key]['room'] = $room->id;
+            $chartData[$key]['score'] = $room->results()->where('is_correct', 1)->count();
+        }
+
+        return collect($chartData);
+    }
 }

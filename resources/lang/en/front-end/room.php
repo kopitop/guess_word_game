@@ -62,4 +62,7 @@ return [
         1 => 'Congratulation !!!',
     ],
     'error-message' => 'Can not fetch data, there are something wrong',
+    'chart' => 'Chart',
+    'on-playing' => 'Now Playing',
+    'score' => 'Score',
 ];

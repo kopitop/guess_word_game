@@ -93,4 +93,13 @@ interface RoomRepositoryInterface extends RepositoryInterface
      * @return mixed
      */
     public function finishRoom($input);
+
+    /**
+     * Get chart data for homepage
+     *
+     * @param var $id
+     *
+     * @return mixed
+     */
+    public function getChartData();
 }
