@@ -22,7 +22,7 @@
                 );
             },
             beginPlay: function (data) {
-                $('#word').html(data.word.content);
+                $('#word').html('Please describe the word, you have been given, by your creativity: ' + data.word.content);
                 $('.is-ready').html('<button class="btn btn-success btn-sm pull-right">' + playingButton + '</button>');
                 $('#ready-button').remove();
                 $('#quit-button').remove();

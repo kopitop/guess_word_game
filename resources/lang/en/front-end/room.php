@@ -65,4 +65,6 @@ return [
     'chart' => 'Chart',
     'on-playing' => 'Now Playing',
     'score' => 'Score',
+    'describe-word' => 'Please describe the word, you have been given, by your creativity: ',
+    'waiting-hall' => 'Waiting Hall',
 ];

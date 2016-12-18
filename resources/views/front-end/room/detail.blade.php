@@ -105,7 +105,7 @@
                 {{
                     $data['current_round']->isDrawer() ?
                     $data['current_round']->word_id ?
-                    $data['current_round']->word->content : '' : ''
+                    trans('front-end/room.describe-word') . $data['current_round']->word->content : '' : ''
                 }}
             </h4>
             <div id="play-panel">
