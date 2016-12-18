@@ -35,6 +35,8 @@ class RoomsController extends BaseController
             ->orderBy('id', 'desc')
             ->paginate();
 
+        $this->viewData['chartData'] = $this->repository->getChartData();
+
         return $highScore->render('front-end.room.index', $this->viewData);
     }
 

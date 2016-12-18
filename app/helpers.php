@@ -51,3 +51,9 @@ if (!function_exists('base64ToImage')) {
         return $outputFile; 
     }
 }
+
+if (!function_exists('randColor')) {
+    function randColor() {
+        return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
+    }
+}

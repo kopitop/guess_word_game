@@ -7,7 +7,6 @@
 
 require('./bootstrap');
 require('./realtime');
-require('./dataTables.buttons.min.js');
 
 $(document).ready(function() {
     //User Chart
@@ -16,22 +15,11 @@ $(document).ready(function() {
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ["Room 1", "Room 2", "Room 3", "Room 4"],
+                labels: chartData.labels,
                 datasets: [{
                     label: 'Score',
-                    data: [5, 3, 3, 1,],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                    ],
+                    data: chartData.data,
+                    backgroundColor: chartData.bgColor,
                     borderWidth: 1
                 }]
             },
@@ -39,10 +27,25 @@ $(document).ready(function() {
                 scales: {
                     yAxes: [{
                         ticks: {
+                            beginAtZero:true,
+                            stepSize: 1,
+                        },
+                        scaleLabel :{
+                            labelString: chartData.trans.score,
+                            display: true,
+                        },
+                    }],
+                    xAxes: [{
+                        ticks: {
                             beginAtZero:true
-                        }
+                        },
+                        scaleLabel :{
+                            labelString: chartData.trans.room,
+                            display: true,
+                        },
                     }]
-                }
+                },
+
             }
         });
     }
