@@ -43,7 +43,15 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            {!! 
+                                link_to_action(
+                                    'Web\RoomsController@index', trans('front-end/room.waiting-hall'), [], []
+                                ) 
+                            !!}
+                        </li>
                         <!-- Authentication Links -->
+
                         @if (Auth::guest())
                             <li><a href="{{ url('/login') }}">{{ trans('front-end/home.buttons.login') }}</a></li>
                             <li><a href="{{ url('/register') }}">{{ trans('front-end/home.buttons.register') }}</a></li>

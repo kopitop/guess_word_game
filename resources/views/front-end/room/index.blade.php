@@ -56,12 +56,30 @@
 </div>
 <div class="col-md-offset-4 col-md-8">
     <div class="panel panel-default">
-        <h3>{{ trans('front-end/room.chart') }}</h3>
+        <h3>{{ trans('front-end/room.on-playing') }}</h3>
         <canvas id="myChart" width="400" height="400"></canvas>
     </div>
 </div>
-
 @endsection
 @push('datatables')
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css">
+<script src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
 {!! $dataTable->scripts() !!}
+@endpush
+@push('script')
+<script type="text/javascript">
+    var chart = {!! json_encode($chartData) !!};
+    var chartData = {};
+    chartData.data = [];
+    chartData.labels = [];
+    chartData.bgColor = [];
+    chart.forEach(function (item, index) {
+        chartData.data.push(item.score);
+        chartData.labels.push("{{ trans('front-end/room.title') }}" + ' ' + item.room);
+        chartData.bgColor.push("{{ randColor() }}");
+    })
+    chartData.trans = {};
+    chartData.trans.score = "{{ trans('front-end/room.score') }}";
+    chartData.trans.room = "{{ trans('front-end/room.title') }}";
+</script>
 @endpush
