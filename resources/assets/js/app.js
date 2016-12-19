@@ -7,6 +7,7 @@
 
 require('./bootstrap');
 require('./realtime');
+require('./dataTables.buttons.min.js');
 
 $(document).ready(function() {
     //User Chart
@@ -89,7 +90,7 @@ $(document).ready(function() {
     }
 
     //Status
-    if (roomStatus == 3) {
+    if (typeof roomStatus != 'undefined' && roomStatus == 3) {
         $('.is-ready').html('<button class="btn btn-success btn-sm pull-right">' + playingButton + '</button>');
     }
 
