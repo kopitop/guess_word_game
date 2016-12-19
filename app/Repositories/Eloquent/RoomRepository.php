@@ -430,7 +430,7 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
 
         foreach ($rooms as $key => $room) {
             $chartData[$key]['room'] = $room->id;
-            $chartData[$key]['score'] = $room->results()->where('is_correct', 1)->count();
+            $chartData[$key]['score'] = $room->results->where('is_correct', 1)->count();
         }
 
         return collect($chartData);

@@ -41,9 +41,4 @@
             @endif
         </div>
     </div>
-    <div class="col-md-8">
-        <div class="panel panel-default">
-            <h3>{{ trans('front-end/profile/show.labels.leaderbroad') }}</h3>
-        </div>
-    </div>
 @endsection
