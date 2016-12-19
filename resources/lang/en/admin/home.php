@@ -11,4 +11,8 @@ return [
         'create' => 'Create',
         'list' => 'List',
     ],
+    'chart' => [
+        'title' => 'Top Words',
+        'total' => 'Total',
+    ]
 ];

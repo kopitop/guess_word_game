@@ -171,6 +171,7 @@ return [
         Lord\Laroute\LarouteServiceProvider::class,
         Arrilot\Widgets\ServiceProvider::class,
         Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
+        Khill\Lavacharts\Laravel\LavachartsServiceProvider::class,
 
         //
 
